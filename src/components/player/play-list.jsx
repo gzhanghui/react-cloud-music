@@ -2,7 +2,8 @@ import React from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import classNames from 'classnames'
 import { formatTime } from "common/js/utils/tool";
-import { playList, playing, currentIndex, changeIndex, togglePlayState } from './player-slice'
+import { message } from 'antd';
+import { playList, playing, currentIndex, changeIndex, changePlay } from './player-slice'
 function PlayList() {
     const list = useSelector(playList);
     const play = useSelector(playing);
@@ -31,15 +32,19 @@ function PlayList() {
                 {
                     list.map((song, i) => {
                         return (
-                            <li className="item" key={song.id}>
+                            <li className= {classNames('item',{'disabled':!song.url})} key={song.id}>
                                 <div className="icon" >
                                     <img src={song.image} width="42" />
                                     <span className="control-icon"
                                         onClick={() => {
+                                            if(!song.url){
+                                                message.error('error')
+                                                return
+                                            }
                                             if (i === index) {
-                                                dispatch(togglePlayState())
+                                                dispatch(changePlay(!play))
                                             } else {
-                                                dispatch(togglePlayState(true))
+                                                dispatch(changePlay(true))
                                             }
                                             dispatch(changeIndex(i))
                                         }}>

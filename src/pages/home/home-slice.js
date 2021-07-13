@@ -5,7 +5,7 @@ const initialState = {
     bannerList: [],
     newSongs: [],
     personalized: [],
-    index:-1
+    index: -1
 };
 function _normalizeSongs(list) {
     let ret = []
@@ -37,11 +37,12 @@ export const getNewSongThunk = createAsyncThunk(
         return data
     }
 )
+
 export const homeSlice = createSlice({
     name: 'home',
     initialState,
     reducers: {
-        changeIndex:(state, action) => {
+        changeIndex: (state, action) => {
             state.index = action.payload
         },
     },
@@ -53,7 +54,6 @@ export const homeSlice = createSlice({
             state.personalized = action.payload;
         },
         [getNewSongThunk.fulfilled]: (state, action) => {
-            console.log(action.payload)
             state.newSongs = action.payload;
         }
     },
@@ -62,5 +62,5 @@ export const { changeIndex } = homeSlice.actions;
 export const bannerList = (state) => state.home.bannerList;
 export const personalized = (state) => state.home.personalized;
 export const newSongs = (state) => state.home.newSongs;
-export const carouselItem= (state) => state.home.bannerList[state.home.index]||{};
+export const carouselItem = (state) => state.home.bannerList[state.home.index] || {};
 export default homeSlice.reducer;

@@ -45,12 +45,7 @@ export const getSongUrl = function (id) {
         return Promise.resolve(res.data)
     })
 }
-export const getUomgComments = function () {
-    const url = 'https://api.uomg.com/api/comments.163?format=json';
-    return axios.get(url).then((res) => {
-        return Promise.resolve(res.data)
-    })
-}
+
 export const songDetail=function(ids){
     const url = '/api/song/detail';
     return axios.get(url, {

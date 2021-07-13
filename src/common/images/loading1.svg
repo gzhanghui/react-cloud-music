@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" style="margin:auto;display:block;" width="28px" height="28px" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid">
+<rect x="30" y="30" width="10" height="40" fill="#ffffff">
+  <animate attributeName="opacity" dur="0.5s" repeatCount="indefinite" calcMode="spline" keyTimes="0;0.5;1" keySplines="0.5 0 0.5 1;0.5 0 0.5 1" values="1;0.2;1" begin="-0.3"></animate>
+</rect>
+<rect x="50" y="30" width="10" height="40" fill="#ffffff">
+  <animate attributeName="opacity" dur="0.5s" repeatCount="indefinite" calcMode="spline" keyTimes="0;0.5;1" keySplines="0.5 0 0.5 1;0.5 0 0.5 1" values="1;0.2;1" begin="-0.2"></animate>
+</rect>
+<rect x="70" y="30" width="10" height="40" fill="#ffffff">
+  <animate attributeName="opacity" dur="0.5s" repeatCount="indefinite" calcMode="spline" keyTimes="0;0.5;1" keySplines="0.5 0 0.5 1;0.5 0 0.5 1" values="1;0.2;1" begin="-0.1"></animate>
+</rect>
+</svg>

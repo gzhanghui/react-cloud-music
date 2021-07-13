@@ -35,7 +35,7 @@ export class drawCD {
     this.src = image
     this.radius = radius || 131
     this.angle = 0.1
-    this.speed = speed || 3000
+    this.speed = speed || 10000
     this.init()
   }
   init() {
@@ -83,6 +83,9 @@ export class drawCD {
     }
   }
   start() {
+    this.animation = window.requestAnimationFrame(this.draw.bind(this));
+  }
+  play() {
     this.animation = window.requestAnimationFrame(this.draw.bind(this));
   }
 }

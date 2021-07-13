@@ -32,7 +32,7 @@ export default function Home() {
         showHeader={false}
         pagination={false}
         columns={[{  dataIndex: 'name' },{  dataIndex: 'artistsName' },{  dataIndex: 'albumName' },{  dataIndex: 'duration' }]}
-        dataSource={newSongList} size="small" 
+        dataSource={newSongList} size="small"
         onRow={() => {
           return {
             onClick: () => {
@@ -41,6 +41,8 @@ export default function Home() {
           }
         }}
         />
+
+
     </React.Fragment>
   )
 }

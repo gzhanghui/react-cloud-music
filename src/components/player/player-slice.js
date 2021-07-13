@@ -1,55 +1,51 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { cloneDeep, isUndefined } from 'lodash';
 import { getLyric } from 'apis/home'
+
+export const PLAY_MODE = {
+    sequence: 0,
+    loop: 1,
+    random: 2
+}
 const initialState = {
     fullScreen: false,
-    songReady: false,
     songError: false,
     currentTime: 0,
     currentIndex: -1,
-    lyric: '',
+    currentLyric: '',
     playList: [],
     playing: false,
     volume: 25,
     panelVisible: false,
-    currentSong: {},
-    currentLineNum: 0
+    currentLineNum: 0,
+    mode: PLAY_MODE.sequence
 };
 export const lyricThunk = createAsyncThunk(
     'player/getLyric',
     async (id) => {
-        const response = await getLyric(id);
-        return response.lrc.lyric;
+        const res = await getLyric(id);
+        return res.lrc.lyric;
     }
 );
 export const playerSlice = createSlice({
     name: 'player',
     initialState,
     reducers: {
-        toggleFullScreen: (state) => {
-            state.fullScreen = !state.fullScreen;
-        },
         addSong: (state, action) => {
             state.playList = [action.payload, ...state.playList]
         },
         replacePlayList: (state, action) => {
             state.playList = action.payload
         },
-        togglePlayState(state, action) {
-            if (isUndefined(action.payload)) {
-                state.playing = !state.playing;
-            } else {
-                state.playing = action.payload
-            }
+        toggleFullScreen: (state) => {
+            state.fullScreen = !state.fullScreen;
         },
-        togglePanel(state) {
+        changePlay: (state, action) => {
+            state.playing = action.payload
+        },
+        togglePanel: (state) => {
             state.panelVisible = !state.panelVisible
         },
-        toggleReady: (state, action) => {
-            console.log(action.payload)
-            state.songReady = action.payload;
-        },
-        updateCurrentTime: (state, action) => {
+        updateTime: (state, action) => {
             state.currentTime = action.payload;
         },
         changeIndex: (state, action) => {
@@ -58,49 +54,96 @@ export const playerSlice = createSlice({
         changeVolume: (state, action) => {
             state.volume = action.payload
         },
-        changePlayState: (state, action) => {
-            state.songReady = action.payload
-        },
         changeCurrentLine: (state, action) => {
             state.currentLineNum = action.payload
         },
-        changeCurLyric: (state, action) => {
-            state.lyric = action.payload;
+        changeCurrentLyric: (state, action) => {
+            state.currentLyric = action.payload;
         },
+        changeMode: (state) => {
+            state.mode = (state.mode + 1) % 3;
+        }
 
     },
     extraReducers: {
+
         [lyricThunk.fulfilled]: (state, action) => {
-            state.lyric = action.payload;
-            state.currentSong = cloneDeep({ ...state.currentSong, lyric: action.payload });
+            const current= { ...state.playList[state.currentIndex], lyric: action.payload }
+            state.playList= state.playList.map((song,index)=>index === state.currentIndex?current:song)
+            state.currentLyric = action.payload;
         },
+
     }
 
 });
 
-export const { toggleFullScreen, togglePlayState, updateCurrentTime, changeIndex, changeVolume, changePlayState,
-    togglePanel, replacePlayList, toggleReady, changeCurrentLine, changeCurLyric } = playerSlice.actions;
+export const {
+    toggleFullScreen,
+    updateTime,
+    changeIndex,
+    changeVolume,
+    togglePanel,
+    changePlay,
+    replacePlayList,
+    changeCurrentLine,
+    changeCurrentLyric,
+    changeMode,
+} = playerSlice.actions;
 
-export const currentIndex = (state) => state.player.currentIndex;
-export const currentTime = (state) => state.player.currentTime;
+
 export const fullScreen = (state) => state.player.fullScreen;
+export const panelVisible = (state) => state.player.panelVisible;
+export const playList = (state) => state.player.playList;
+export const currentIndex = (state) => state.player.currentIndex;
+export const currentSong = (state) => state.player.playList[state.player.currentIndex] || {}
+export const currentTime = (state) => state.player.currentTime;
 export const playing = (state) => state.player.playing;
 export const volume = (state) => state.player.volume;
-export const playList = (state) => state.player.playList;
-export const panelVisible = (state) => state.player.panelVisible;
-export const currentSong = (state) => state.player.playList[state.player.currentIndex] || {}
-export const lyric = (state) => state.player.lyric;
-export const songReady = (state) => state.player.songReady;
+export const currentLyric = (state) => state.player.currentLyric;
 export const currentLineNum = (state) => state.player.currentLineNum;
+export const mode = (state) => state.player.mode;
+export const modeIcon = (state) => (state.player.mode === PLAY_MODE.sequence ? 'icon-sequence' : state.player.mode === PLAY_MODE.random ? 'icon-random' : 'icon-loop')
+export const modeTxt = (state) => (state.player.mode === PLAY_MODE.sequence ? '顺序播放' : state.player.mode === PLAY_MODE.random ? '随机播放' : '单曲循环')
 
-export const addLyric = (id) => (dispatch, getState) => {
+export const addSongLyric = (id) => (dispatch, getState) => {
     const song = currentSong(getState());
     if (!song.lyric) {
         dispatch(lyricThunk(id))
     } else {
-        dispatch(changeCurLyric(getState(), song.lyric))
+        dispatch(changeCurrentLyric(song.lyric))
+    }
+};
+export const toggleNext = () => async (dispatch, getState) => {
+    const list = playList(getState())
+    if (!list.length) return
+    if (list.length === 1) {
+        loop(dispatch)
+    } else {
+        let index = currentIndex(getState()) + 1
+        if (index === list.length) {
+            index = 0
+        }
+        console.log(getState())
+        dispatch(changeIndex(index))
     }
 };
 
+export const togglePrev = () => (dispatch, getState) => {
+    const list = playList(getState())
+    if (!list.length) return
+    if (list.length === 1) {
+        loop(dispatch)
+    } else {
+        let index = currentIndex(getState()) - 1
+        if (index === -1) {
+            index = 0
+        }
+        dispatch(changeIndex(index))
+    }
+};
 
+function loop(dispatch) {
+    dispatch(updateTime(0))
+    dispatch(changePlay(true))
+}
 export default playerSlice.reducer;

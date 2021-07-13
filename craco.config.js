@@ -11,7 +11,8 @@ module.exports = {
                         modifyVars: {
                             '@primary-color': '#20BF76',
                             '@black': '#05030D',
-                            '@text-color': '#81858B',
+                            // '@text-color': '#81858B',
+                            '@text-color': '#ccc',
                             '@text-color-highlight': '#FFFFFF',
                             '@component-background': 'transparent',
                             '@background-color-light': 'rgba(0,0,0,0.18)'

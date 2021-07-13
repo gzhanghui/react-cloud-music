@@ -1,15 +1,17 @@
 import React, { useRef, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import Lyric from "@/common/js/utils/lyric-parser";
+import animations from "create-keyframe-animation";
+import Lyric from "lyric-parser";
 import { get } from 'lodash'
+import { CSSTransition } from "react-transition-group";
 import { Slider, Drawer, Tooltip } from "antd";
 import classNames from "classnames";
-import { useSpring, animated, config, useSpringRef, useChain, to } from '@react-spring/web'
-import { removeClass, addClass } from 'common/js/utils/dom'
+import { removeClass } from 'common/js/utils/dom'
+
 import { formatTime, drawCD } from "common/js/utils/tool";
 import Scroll from "@/components/scroll";
+import { prefixStyle } from "@/common/js/utils/dom";
 import musicCover from "@/common/images/default-music.svg";
-import lodaingIcon from "@/common/images/loading1.svg";
 import PlayList from './play-list'
 import {
     fullScreen,
@@ -35,6 +37,7 @@ import {
     togglePrev
 } from './player-slice'
 
+const transform = prefixStyle("transform");
 
 function Player() {
     const time = useSelector(currentTime);
@@ -48,16 +51,14 @@ function Player() {
     const playModeIcon = useSelector(modeIcon)
     const playModeTxt = useSelector(modeTxt)
     const lyric = useSelector(currentLyric)
-    // dom
+
     const $cd = useRef(null);
-    const $lyric = useRef(null);
+    const $lyricBox = useRef(null);
     const $audio = useRef(null);
     const $canvas = useRef(null);
     const $scroll = useRef(null);
     const $nodeRef = useRef(null)
-    const $miniCover = useRef(null);
 
-    // ref
     const readyRef = useRef(false);
     const cdRef = useRef(null);
     const lyricRef = useRef(null);
@@ -66,11 +67,11 @@ function Player() {
 
     function handleLyric({ lineNum }) {
         if ($scroll.current) {
-            if (!$lyric.current) return;
+            if (!$lyricBox.current) return;
             dispatch(changeCurrentLine(lineNum))
-            const lineEle = $lyric.current.getElementsByTagName("p");
-            if (lineNum > 3) {
-                let lineEl = lineEle[lineNum - 3];
+            const lineEle = $lyricBox.current.getElementsByTagName("p");
+            if (lineNum > 5) {
+                let lineEl = lineEle[lineNum - 5];
                 $scroll.current.scrollToElement(lineEl, 1000);
             } else {
                 $scroll.current.scrollTo(0, 0, 1000);
@@ -82,20 +83,21 @@ function Player() {
     useEffect(() => {
 
         if (!song.url) return;
-          readyRef.current = false;
+        readyRef.current = false;
+
         if (lyricRef.current) {
             lyricRef.current.stop();
             lyricRef.current = null;
             dispatch(updateTime(0))
             dispatch(changeCurrentLine(0))
         }
-        if ($audio.current.src !== song.url) {
+        if($audio.current.src!==song.url){
             $audio.current.src = song.url;
             $audio.current.play();
             dispatch(changePlay(true))
             $audio.current.update = true;
         }
-
+        
         /* 绘制旋转的CD */
         if (cdRef.current) {
             cdRef.current.drawCover(song.image);
@@ -104,12 +106,10 @@ function Player() {
         }
         console.log('update song')
         dispatch(addSongLyric(song.id));
-        if (lyric) {
+        if(lyric){
             if (song.lyric !== lyric) return
             lyricRef.current = new Lyric(song.lyric, handleLyric)
-            if (readyRef.current) {
-                lyricRef.current.seek(time);
-            }
+            if (readyRef.current) { lyricRef.current.seek(time); }
         }
     }, [song])
 
@@ -129,30 +129,43 @@ function Player() {
     }, [play])
 
 
-    const panelSpringApi = useSpringRef();
-
-    const { opacity } = useSpring({
-        ref: panelSpringApi,
-        from: { opacity: 0 },
-        to: { opacity: screen ? 1 : 0 },
-        onStart(result) {
-            if (result.value.opacity < 0.5) removeClass($nodeRef.current, 'hide')
-        },
-        onRest(result) {
-            if (result.finished && result.value.opacity === 0) addClass($nodeRef.current, 'hide')
-        }
-    })
-
-    const cdSpringApi = useSpringRef();
-    const X = window.innerWidth / 2 - window.innerWidth / 2 / 2 - 20
-    const Y = window.innerHeight - 80 - 262 / 2
-    const { xy, scale } = useSpring({
-        xy: screen ? [0, 0] : [-X, Y],
-        scale: screen ? 1 : 0.16,
-        config: config.gentle,
-    })
-    useChain(screen ? [panelSpringApi, cdSpringApi] : [cdSpringApi, panelSpringApi]);
-
+    const onEnter = () => {
+        removeClass($nodeRef.current, 'hide')
+        const { x, y, scale } = _getPosAndScale();
+        let animation = {
+            0: {
+                transform: `translate3d(${x}px,${y}px,0) scale(${scale})`,
+            },
+            60: {
+                transform: `translate3d(0,0,0) scale(1.1)`,
+            },
+            100: {
+                transform: `translate3d(0,0,0) scale(1)`,
+            },
+        };
+        animations.registerAnimation({
+            name: "move",
+            animation,
+            presets: {
+                duration: 400,
+                easing: "linear",
+            },
+        });
+        animations.runAnimation($cd.current, "move");
+    };
+    const onEntered = () => {
+        animations.unregisterAnimation("move");
+        $cd.current.style.animation = "";
+    };
+    const onExit = () => {
+        $cd.current.style.transition = "all 0.4s";
+        const { x, y, scale } = _getPosAndScale();
+        $cd.current.style[transform] = `translate3d(${x}px,${y}px,0) scale(${scale})`;
+    };
+    const onExited = () => {
+        $cd.current.style.transition = "";
+        $cd.current.style[transform] = "";
+    };
 
     return (
         <div className="player-wrap">
@@ -164,7 +177,6 @@ function Player() {
                     dispatch(toggleNext())
                 }}
                 onPause={() => { dispatch(changePlay(false)) }}
-                onPlaying={() => { dispatch(changePlay(true)) }}
                 onCanPlay={() => {
                     if (readyRef.current) return
                     console.log(`onCanPlay`)
@@ -179,46 +191,56 @@ function Player() {
                     dispatch(changeVolume(e.target.volume * 100))
                 }}
             ></audio>
-            <animated.div style={{ opacity }} className={classNames('normal-player hide')} ref={$nodeRef}>
-                <div className="background-mask"></div>
-                <div className="background" style={{ backgroundImage: `url(${song.image})` }}></div>
-                <div className="song-content">
-                    <div className="cd">
-                        <animated.div
-                            style={{
-                                transform: to([scale.to({ range: [0, 0.65, 0.75, 1], output: [0.16, 0.8, 1.03, 1], }), xy], (s, xy) => (`translate(${xy[0]}px, ${xy[1]}px) scale(${s}) `))
-                            }}
-                            ref={$cd} className="album-cover">
-                            <canvas id='canvas' className="canvas" ref={$canvas}></canvas>
-                        </animated.div>
-                    </div>
-                    <div className="lyric">
-                        <div className="lyric-content">
-                            <h3 className="song-name">{song.name}</h3>
-                            <div className="song-info">
-                                <div className="album">
-                                    <span className="album-label">专辑：</span>
-                                    <span className="album-name"> {song.albumName}</span>
-                                </div>
-                                <div className="singer">
-                                    <span className="singer-label">歌手：</span>
-                                    <span className="singer-name">{song.artistsName}</span>
+            <div>
+                <CSSTransition
+                    nodeRef={$nodeRef}
+                    in={screen}
+                    timeout={400}
+                    classNames="normal"
+                    appear={true}
+                    onEnter={onEnter}
+                    onEntered={onEntered}
+                    onExit={onExit}
+                    onExited={onExited}
+                >
+                    <div className={classNames('normal-player hide')} ref={$nodeRef}>
+                        <div className="background-mask"></div>
+                        <div className="background" style={{ backgroundImage: `url(${song.image})` }}></div>
+                        <div className="song-content">
+                            <div className="cd">
+                                <div ref={$cd} className="album-cover">
+                                    <canvas id='canvas' className="canvas" ref={$canvas}></canvas>
                                 </div>
                             </div>
-                            <div className="lyric-panel">
-                                <Scroll ref={$scroll}>
-                                    <div ref={$lyric}>
-                                        {get(lyricRef, 'current.lines') && lyricRef.current.lines.map((ric, index) => (
-                                            <p className={classNames('lyric-line', { active: index === line })}
-                                                key={index}>{ric.txt}
-                                            </p>))}
+                            <div className="lyric">
+                                <div className="lyric-content">
+                                    <h3 className="song-name">{song.name}</h3>
+                                    <div className="song-info">
+                                        <div className="album">
+                                            <span className="album-label">专辑：</span>
+                                            <span className="album-name"> {song.albumName}</span>
+                                        </div>
+                                        <div className="singer">
+                                            <span className="singer-label">歌手：</span>
+                                            <span className="singer-name">{song.artistsName}</span>
+                                        </div>
                                     </div>
-                                </Scroll>
+                                    <div className="lyric-panel">
+                                        <Scroll ref={$scroll}>
+                                            <div ref={$lyricBox}>
+                                                {get(lyricRef, 'current.lines') && lyricRef.current.lines.map((ric, index) => (
+                                                    <p className={classNames('lyric-line', { active: index === line })}
+                                                        key={index}>{ric.txt}
+                                                    </p>))}
+                                            </div>
+                                        </Scroll>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            </animated.div>
+                </CSSTransition>
+            </div>
             <div className="mini-player">
                 <div
                     className="left"
@@ -226,7 +248,7 @@ function Player() {
                         dispatch(toggleFullScreen())
                     }}
                 >
-                    <div className="icon" ref={$miniCover}>
+                    <div className="icon">
                         <img src={song.image || musicCover} alt="" />
                     </div>
                     <div className="text">
@@ -239,18 +261,17 @@ function Player() {
                         <button disabled={!readyRef.current} onClick={() => { dispatch(togglePrev()) }} className="icon">
                             <i className="iconfont icon-prev"></i>
                         </button>
-                        <button disabled={!readyRef.current} className="icon"
-                            onClick={() => { dispatch(changePlay(!play)) }}>
-                            {readyRef.current && (<i className={classNames('iconfont', {
+                        <button disabled={!readyRef.current} className="icon" onClick={() => {
+                            dispatch(changePlay(!play))
+                        }}>
+                            <i className={classNames('iconfont', {
                                 'icon-poweroff-circle-fill': play,
                                 'icon-play-circle-fill': !play
-                            })}></i>)}
-                            {
-                                !readyRef.current && (<img src={lodaingIcon} width="40" />)
-                            }
+                            })}></i>
                         </button>
-                        <button disabled={!readyRef.current} 
-                                onClick={() => {  dispatch(toggleNext())}} className="icon">
+                        <button disabled={!readyRef.current} onClick={() => {
+                            dispatch(toggleNext())
+                        }} className="icon">
                             <i className="iconfont icon-next">{/**/}</i>
                         </button>
                     </div>
@@ -263,6 +284,7 @@ function Player() {
                                 value={time}
                                 onAfterChange={(value) => {
                                     $audio.current.update = true
+                                    console.log(value)
                                     $audio.current.currentTime = value / 1000;
                                 }}
                                 max={song.duration}
@@ -272,7 +294,6 @@ function Player() {
                                 onChange={(value) => {
                                     $audio.current.update = false
                                     dispatch(updateTime(value))
-                                    lyricRef.current.seek(time);
                                 }}
                             />
                         </div>
@@ -300,7 +321,9 @@ function Player() {
                             min={0}
                             max={100}
                             value={vol}
-                            tipFormatter={val => val + "%"}
+                            tipFormatter={(val) => {
+                                return val + "%";
+                            }}
                             onChange={(val) => {
                                 $audio.current.volume = val / 100;
                             }}
@@ -313,12 +336,13 @@ function Player() {
                     </div>
                 </div>
             </div>
-            <Drawer
+            <div className="player-list">
+                <Drawer
                     title=""
-                    className="player-list"
+                    className=""
                     placement="right"
                     width={340}
-                    mask={false}
+                    maskClosable={true}
                     closable={false}
                     onClose={() => {
                         dispatch(togglePanel())
@@ -338,8 +362,30 @@ function Player() {
                         </Scroll>
                     </div>
                 </Drawer>
+
+            </div>
         </div>
     );
+}
+
+function _getPosAndScale() {
+    const targetWidth = 42;
+    const paddingLeft = 24;
+    const paddingBottom = 40;
+    const paddingTop = 100;
+    const width = 262;
+    const scale = targetWidth / width;
+    const x = -(
+        window.innerWidth / 2 -
+        (840 / 2 - width + width / 2) -
+        paddingLeft
+    );
+    const y = window.innerHeight - paddingTop - width / 2 - paddingBottom;
+    return {
+        x,
+        y,
+        scale,
+    };
 }
 
 export default Player;

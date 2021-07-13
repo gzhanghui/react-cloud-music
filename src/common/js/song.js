@@ -1,21 +1,19 @@
 import { getSongUrl } from 'apis/home'
-function filterArtists(artists) {
+
+export function formatName(data,field='name') {
     let ret = []
-    if (!artists) {
-        return ''
-    }
-    artists.forEach((s) => {
-        ret.push(s.name)
+    if (!data) return ''
+    data.forEach((s) => {
+        ret.push(s[field])
     })
     return ret.join('/')
 }
-
 export function createSong(data) {
     const { song } = data
     return  {
         name: data.name,
         id: data.id,
-        artistsName: filterArtists(song.artists),
+        artistsName: formatName(song.artists),
         artists: song.artists,
         album: song.album,
         albumName: song.album.name,
