@@ -1,0 +1,64 @@
+.user {
+    display: flex;
+    justify-items: center;
+    align-items: center;
+    margin-top: 30px;
+    margin-bottom: 40px;
+
+    .avatar {
+        width: 50px;
+        height: 50px;
+        margin-left: 24px;
+        background: url("https://img4.kuwo.cn/star/albumcover/500/39/42/1467983488.jpg") no-repeat;
+        background-size: cover;
+        border-radius: 50%;
+    }
+
+    .name {
+        color: #80838f;
+        flex: 1;
+        margin-left: 12px;
+    }
+}
+
+.tab-list {
+    margin-top: 10px;
+
+    .list-item {
+        margin-bottom: 12px;
+        border-bottom: 1px solid #131726;
+
+        &:last-child {
+            border-bottom: none;
+        }
+    }
+
+    .title {
+        line-height: 24px;
+        padding-left: 24px;
+        font-size: 13px;
+    }
+
+    li {
+        margin-top: 16px;
+        line-height: 24px;
+        padding-left: 24px;
+        cursor: pointer;
+        a{
+            color: @text-color;
+        }
+        &.active {
+            a{
+             color: #ffffff;
+
+            }
+            border-right: 2px solid #fff;
+        }
+
+        span {
+            display: inline-block;
+            font-size: 13px;
+            margin-left: 12px;
+        }
+    }
+}
