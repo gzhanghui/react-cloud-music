@@ -1,6 +1,26 @@
 @layout-header-padding: 0 20px;
 @layout-footer-padding: 16px 50px;
 @background-color-light: rgba(0, 0, 0,1);
+
+.ant-card{
+    background-color: transparent;
+    color: @text-color;
+    .ant-card-head{
+        border: 0;
+        color: @white;
+        padding: 0 24px;
+    }
+    &.ant-card-bordered{
+        border: 0;
+      
+    }
+    .ant-card-body{
+        padding: 0 24px 24px 24px;
+    }
+}
+
+
+
 .ant-layout{
     position: relative;
     z-index: 2;
@@ -8,15 +28,9 @@
 }
 .ant-layout-header{
     background-color: transparent;
-    // width: 100%;
-    // position: fixed;
-    // left: 0;
-    // right: 0;
-    // z-index: 10;
-    // padding-left: 200px;
 }
 .ant-layout-footer{
-    background-color: rgba(5,3,13.8);
+    background-color: @component-background //rgba(5,3,13.8);
 }
 .ant-layout-sider{
     background-color: rgba(0, 0, 0,0.5);
@@ -26,4 +40,74 @@
 }
 .ant-table{
     background-color: transparent;
+}
+.ant-input-affix-wrapper, .ant-input{
+    background-color: transparent;
+}
+
+.ant-select-item-option-active:not(.ant-select-item-option-disabled){
+    background-color: @color-0-3;
+    color: @primary-color;
+}
+.ant-select-item-option-selected:not(.ant-select-item-option-disabled){
+    background-color: @color-0-3;
+    color: @primary-color;
+}
+.ant-input-affix-wrapper{
+    border-color: rgba(255, 255, 255,0.25);
+    border-radius: 15px;
+    padding: 2px 11px;
+    input{
+        height: 26px;
+    }
+}
+.rc-virtual-list-scrollbar-thumb{
+    background: @color-3 !important;
+}
+.ant-slider{
+    &-rail{
+        height: 2px;
+        // background-color: @color-4; 
+    }
+    &-track{
+        height: 2px;
+        background-color: @white;// #f5f5f5
+        z-index: 2;
+    }
+    &-step{
+        height: 2px;
+    }
+    &-handle{
+        width: 10px;
+        height: 10px;
+        border-color:@white;
+        top: 0;
+        margin-top: 0;
+        background-color: #05030d;
+        z-index: 2;
+        &:focus{
+            border-color:@white;
+        }
+    }
+    &:hover {
+        .ant-slider-rail{
+            background-color:#55585F;
+        }
+        .ant-slider-track{
+            background-color:@white; // #00c000
+        }
+        .ant-slider-handle{
+            border-color:@white !important; // #e1e1e1
+        }
+    }
+    .loaded{
+        position: absolute;
+        height: 2px;
+        background-color: @color-6; //55585F
+        border-radius: 1px;
+        transition: background-color 0.3s;
+        top: 4px;
+        width: 100px;
+        z-index: 0;
+    }
 }

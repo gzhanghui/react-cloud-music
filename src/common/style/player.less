@@ -90,7 +90,7 @@
     .song-name {
       font-size: 24px;
       font-style: normal;
-      color: #fff;
+      color: @text-color-title;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
@@ -143,15 +143,13 @@
   bottom: 80px;
 }
 
-.ant-drawer-content {
-  background: #05030d;
-}
+
 
 .list-title {
   margin-bottom: 12px;
 
   h3 {
-    color: #ffffff;
+    color: @text-color-title;
     font-size: 20px;
     margin: 0;
   }
@@ -178,17 +176,17 @@
 
 .song-list .item {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   padding: 10px;
-  border-bottom: 1px solid rgb(20, 20, 20);
+  border-bottom: 1px solid @border-color;
   &.disabled{
     color: #81858B;
   }
   &:hover {
-    background-color: rgba(20, 20, 20, 1);
+    background-color: @color-0-3;
 
     .iconfont {
-      color: #fff;
+      color:@text-color-highlight;
     }
 
     .control-icon {
@@ -230,7 +228,7 @@
       margin: 0;
       display: flex;
       height: 22px;
-
+      color:@text-color-title;
       .iconfont {
         margin-left: 10px;
         color: #31c27c;
@@ -266,6 +264,9 @@
     background-color: transparent;
     outline: transparent;
     border: 0;
+    width: 44px;
+    height: 44px;
+    overflow: hidden;
   }
 
   .left {

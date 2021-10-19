@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import classNames from 'classnames'
 import { formatTime } from "common/js/utils/tool";
 import { message } from 'antd';
-import { playList, playing, currentIndex, changeIndex, changePlay } from './player-slice'
+import { playList, playing, currentIndex, changeIndex } from './player-slice'
 function PlayList() {
     const list = useSelector(playList);
     const play = useSelector(playing);
@@ -42,9 +42,9 @@ function PlayList() {
                                                 return
                                             }
                                             if (i === index) {
-                                                dispatch(changePlay(!play))
+                                                // dispatch(changePlay(!play))
                                             } else {
-                                                dispatch(changePlay(true))
+                                                // dispatch(changePlay(true))
                                             }
                                             dispatch(changeIndex(i))
                                         }}>

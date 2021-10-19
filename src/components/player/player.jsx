@@ -1,15 +1,14 @@
 import React, { useRef, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import Lyric from "@/common/js/utils/lyric-parser";
 import { get } from 'lodash'
 import { Slider, Drawer, Tooltip } from "antd";
 import classNames from "classnames";
 import { useSpring, animated, config, useSpringRef, useChain, to } from '@react-spring/web'
 import { removeClass, addClass } from 'common/js/utils/dom'
 import { formatTime, drawCD } from "common/js/utils/tool";
+import Lyric from "@/common/js/utils/lyric-parser";
 import Scroll from "@/components/scroll";
 import musicCover from "@/common/images/default-music.svg";
-import lodaingIcon from "@/common/images/loading1.svg";
 import PlayList from './play-list'
 import {
     fullScreen,
@@ -37,11 +36,11 @@ import {
 
 
 function Player() {
-    const time = useSelector(currentTime);
     const list = useSelector(playList);
     const visible = useSelector(panelVisible);
     const screen = useSelector(fullScreen);
     const song = useSelector(currentSong);
+    const time = useSelector(currentTime);
     const line = useSelector(currentLineNum)
     const play = useSelector(playing)
     const vol = useSelector(volume)
@@ -56,12 +55,13 @@ function Player() {
     const $scroll = useRef(null);
     const $nodeRef = useRef(null)
     const $miniCover = useRef(null);
-
+    const $progress = useRef(null);
     // ref
     const readyRef = useRef(false);
     const cdRef = useRef(null);
     const lyricRef = useRef(null);
-
+    const loaded = useRef(0)
+    const timerRef = useRef(null)
     const dispatch = useDispatch();
 
     function handleLyric({ lineNum }) {
@@ -80,9 +80,11 @@ function Player() {
 
     /* 音乐切换时 */
     useEffect(() => {
-
         if (!song.url) return;
-          readyRef.current = false;
+        readyRef.current = false;
+        if(play){
+            readyRef.current = true;
+        }
         if (lyricRef.current) {
             lyricRef.current.stop();
             lyricRef.current = null;
@@ -103,29 +105,35 @@ function Player() {
             cdRef.current = new drawCD($canvas.current, song.image)
         }
         console.log('update song')
+
+        clearTimeout(timerRef.current)
+        timerRef.current = setTimeout(() => {
+            readyRef.current = true
+        }, 5000)
         dispatch(addSongLyric(song.id));
+    }, [song])
+    useEffect(() => {
         if (lyric) {
             if (song.lyric !== lyric) return
             lyricRef.current = new Lyric(song.lyric, handleLyric)
-            if (readyRef.current) {
-                lyricRef.current.seek(time);
-            }
+            lyricRef.current.seek(time);
         }
-    }, [song])
+    }, [lyric])
 
     /* 播放状态变化时 */
     useEffect(() => {
         if (!readyRef.current) return
-        console.log(`play`)
         if (play) {
             $audio.current.play()
             cdRef.current.start();
-            lyricRef.current && lyricRef.current.seek(time);
+            lyricRef.current && lyricRef.current.play();
+            readyRef.current = true;
         } else {
             $audio.current.pause()
             cdRef.current.stop();
             lyricRef.current && lyricRef.current.stop();
         }
+        console.log('play')
     }, [play])
 
 
@@ -140,6 +148,7 @@ function Player() {
         },
         onRest(result) {
             if (result.finished && result.value.opacity === 0) addClass($nodeRef.current, 'hide')
+            $scroll.current.refresh()
         }
     })
 
@@ -153,23 +162,35 @@ function Player() {
     })
     useChain(screen ? [panelSpringApi, cdSpringApi] : [cdSpringApi, panelSpringApi]);
 
-
+    console.log(readyRef.current)
     return (
-        <div className="player-wrap">
+        <React.Fragment>
             <audio
                 ref={$audio}
-                onError={() => { readyRef.current = true }}
+                onError={() => {
+                    clearTimeout(timerRef.current)
+                    readyRef.current = true;
+                }}
                 onEnded={() => {
+                    console.log('onEnded')
                     dispatch(updateTime(0))
                     dispatch(toggleNext())
                 }}
                 onPause={() => { dispatch(changePlay(false)) }}
-                onPlaying={() => { dispatch(changePlay(true)) }}
-                onCanPlay={() => {
-                    if (readyRef.current) return
-                    console.log(`onCanPlay`)
+                onPlaying={() => {
+                    console.log('onPlaying')
                     readyRef.current = true;
+                    clearTimeout(timerRef.current);
+                    dispatch(changePlay(true))
+                }}
+                onCanPlay={(e) => {
+                    readyRef.current = true;
+                    console.log(`onCanPlay`)
+                    loaded.current = e.target.buffered.end(e.target.buffered.length - 1) / e.target.duration
                     lyricRef.current && lyricRef.current.seek(time);
+                }}
+                onProgress={(e) => {
+                    loaded.current = e.target.buffered.end(e.target.buffered.length - 1) / e.target.duration
                 }}
                 onTimeUpdate={(e) => {
                     if (!$audio.current.update) return
@@ -178,142 +199,155 @@ function Player() {
                 onVolumeChange={(e) => {
                     dispatch(changeVolume(e.target.volume * 100))
                 }}
+                preload="auto"
             ></audio>
-            <animated.div style={{ opacity }} className={classNames('normal-player hide')} ref={$nodeRef}>
-                <div className="background-mask"></div>
-                <div className="background" style={{ backgroundImage: `url(${song.image})` }}></div>
-                <div className="song-content">
-                    <div className="cd">
-                        <animated.div
-                            style={{
-                                transform: to([scale.to({ range: [0, 0.65, 0.75, 1], output: [0.16, 0.8, 1.03, 1], }), xy], (s, xy) => (`translate(${xy[0]}px, ${xy[1]}px) scale(${s}) `))
-                            }}
-                            ref={$cd} className="album-cover">
-                            <canvas id='canvas' className="canvas" ref={$canvas}></canvas>
-                        </animated.div>
-                    </div>
-                    <div className="lyric">
-                        <div className="lyric-content">
-                            <h3 className="song-name">{song.name}</h3>
-                            <div className="song-info">
-                                <div className="album">
-                                    <span className="album-label">专辑：</span>
-                                    <span className="album-name"> {song.albumName}</span>
-                                </div>
-                                <div className="singer">
-                                    <span className="singer-label">歌手：</span>
-                                    <span className="singer-name">{song.artistsName}</span>
-                                </div>
-                            </div>
-                            <div className="lyric-panel">
-                                <Scroll ref={$scroll}>
-                                    <div ref={$lyric}>
-                                        {get(lyricRef, 'current.lines') && lyricRef.current.lines.map((ric, index) => (
-                                            <p className={classNames('lyric-line', { active: index === line })}
-                                                key={index}>{ric.txt}
-                                            </p>))}
+            <div className="player-wrap">
+
+                <animated.div style={{ opacity }} className={classNames('normal-player hide')} ref={$nodeRef}>
+                    <div className="background-mask"></div>
+                    <div className="background" style={{ backgroundImage: `url(${song.image})` }}></div>
+                    <div className="song-content">
+                        <div className="cd">
+                            <animated.div
+                                style={{
+                                    transform: to([scale.to({ range: [0, 0.65, 0.75, 1], output: [0.16, 0.8, 1.03, 1], }), xy], (s, xy) => (`translate(${xy[0]}px, ${xy[1]}px) scale(${s}) `))
+                                }}
+                                ref={$cd} className="album-cover">
+                                <canvas id='canvas' className="canvas" ref={$canvas}></canvas>
+                            </animated.div>
+                        </div>
+                        <div className="lyric">
+                            <div className="lyric-content">
+                                <h3 className="song-name">{song.name}</h3>
+                                <div className="song-info">
+                                    <div className="album">
+                                        <span className="album-label">专辑：</span>
+                                        <span className="album-name"> {song.albumName}</span>
                                     </div>
-                                </Scroll>
+                                    <div className="singer">
+                                        <span className="singer-label">歌手：</span>
+                                        <span className="singer-name">{song.artistsName}</span>
+                                    </div>
+                                </div>
+                                <div className="lyric-panel">
+                                    <Scroll ref={$scroll}>
+                                        <div ref={$lyric}>
+                                            {get(lyricRef, 'current.lines') && lyricRef.current.lines.map((ric, index) => (
+                                                <p className={classNames('lyric-line', { active: index === line })}
+                                                    key={index}>{ric.txt}
+                                                </p>))}
+                                        </div>
+                                    </Scroll>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            </animated.div>
-            <div className="mini-player">
-                <div
-                    className="left"
-                    onClick={() => {
-                        dispatch(toggleFullScreen())
-                    }}
-                >
-                    <div className="icon" ref={$miniCover}>
-                        <img src={song.image || musicCover} alt="" />
+                </animated.div>
+                <div className="mini-player">
+                    <div
+                        className="left"
+                        onClick={() => {
+                            dispatch(toggleFullScreen())
+                        }}
+                    >
+                        <div className="icon" ref={$miniCover}>
+                            <img src={song.image || musicCover} alt="" />
+                        </div>
+                        <div className="text">
+                            <div className="name">{song.name}</div>
+                            <div className="desc">{song.artistsName}</div>
+                        </div>
                     </div>
-                    <div className="text">
-                        <div className="name">{song.name}</div>
-                        <div className="desc">{song.artistsName}</div>
+                    <div className="control">
+                        <div className="operators">
+                            <button disabled={!readyRef.current} onClick={() => { dispatch(togglePrev()) }} className="icon">
+                                <i className="iconfont icon-prev"></i>
+                            </button>
+                            <button disabled={!readyRef.current} className="icon"
+              
+              
+              >
+                {play ? (
+                  <i
+                    className="iconfont icon-poweroff-circle-fill"
+                    onClick={controls.pause}
+                  ></i>
+                ) : (
+                  <i
+                    className="iconfont icon-play-circle-fill"
+                    onClick={controls.play}
+                  ></i>
+                )}
+              </button>
+                            <button disabled={!readyRef.current}
+                                onClick={() => { dispatch(toggleNext()) }} className="icon">
+                                <i className="iconfont icon-next">{/**/}</i>
+                            </button>
+                        </div>
+                        <div className="progress-wrapper">
+                            <span className="time-l time">
+                                {formatTime(time)}
+                            </span>
+                            <div className="progress" ref={$progress}>
+                                <Slider
+                                    disabled={!song.url}
+                                    value={time}
+                                    onAfterChange={(value) => {
+                                        $audio.current.update = true
+                                        $audio.current.currentTime = value / 1000;
+                                    }}
+                                    max={song.duration}
+                                    tipFormatter={(val) => {
+                                        if (!song.duration) return val + '%'
+                                        return parseInt((Number(val || 0) / (song.duration || 0)) * 100) + '%';
+                                    }}
+                                    onChange={(value) => {
+                                        $audio.current.update = false
+                                        dispatch(updateTime(value))
+                                        lyricRef.current && lyricRef.current.seek(time);
+                                    }}
+                                >
+                                    {$progress.current && (<div className="loaded" style={{ width: `${loaded.current * $progress.current.getBoundingClientRect().width}px` }}></div>)}
+                                </Slider>
+                            </div>
+                            <span className="time-r time">
+                                {formatTime(song.duration)}
+                            </span>
+                        </div>
                     </div>
-                </div>
-                <div className="control">
-                    <div className="operators">
-                        <button disabled={!readyRef.current} onClick={() => { dispatch(togglePrev()) }} className="icon">
-                            <i className="iconfont icon-prev"></i>
+                    <div className="right">
+                        <button className="icon">
+                            <i className="iconfont icon-like"></i>
                         </button>
-                        <button disabled={!readyRef.current} className="icon"
-                            onClick={() => { dispatch(changePlay(!play)) }}>
-                            {readyRef.current && (<i className={classNames('iconfont', {
-                                'icon-poweroff-circle-fill': play,
-                                'icon-play-circle-fill': !play
-                            })}></i>)}
-                            {
-                                !readyRef.current && (<img src={lodaingIcon} width="40" />)
-                            }
+                        <button className="icon" onClick={() => {
+                            dispatch(changeMode())
+                        }}>
+                            <Tooltip title={playModeTxt}>
+                                <i className={classNames('iconfont', playModeIcon)}></i>
+                            </Tooltip>
                         </button>
-                        <button disabled={!readyRef.current} 
-                                onClick={() => {  dispatch(toggleNext())}} className="icon">
-                            <i className="iconfont icon-next">{/**/}</i>
+                        <button className="icon">
+                            <i className="iconfont icon-notification">{/**/}</i>
                         </button>
-                    </div>
-                    <div className="progress-wrapper">
-                        <span className="time-l time">
-                            {formatTime(time)}
-                        </span>
-                        <div className="progress">
+                        <div className="volume">
                             <Slider
-                                value={time}
-                                onAfterChange={(value) => {
-                                    $audio.current.update = true
-                                    $audio.current.currentTime = value / 1000;
-                                }}
-                                max={song.duration}
-                                tipFormatter={(val) => {
-                                    return parseInt((Number(val) / (song.duration)) * 100) + '%';
-                                }}
-                                onChange={(value) => {
-                                    $audio.current.update = false
-                                    dispatch(updateTime(value))
-                                    lyricRef.current.seek(time);
+                                min={0}
+                                max={100}
+                                value={vol}
+                                tipFormatter={val => val + "%"}
+                                onChange={(val) => {
+                                    $audio.current.volume = val / 100;
                                 }}
                             />
                         </div>
-                        <span className="time-r time">
-                            {formatTime(song.duration)}
-                        </span>
+                        <div className="icon" onClick={() => {
+                            dispatch(togglePanel())
+                        }}>
+                            <i className="iconfont icon-list"></i>
+                        </div>
                     </div>
                 </div>
-                <div className="right">
-                    <button className="icon">
-                        <i className="iconfont icon-like"></i>
-                    </button>
-                    <button className="icon" onClick={() => {
-                        dispatch(changeMode())
-                    }}>
-                        <Tooltip title={playModeTxt}>
-                            <i className={classNames('iconfont', playModeIcon)}></i>
-                        </Tooltip>
-                    </button>
-                    <button className="icon">
-                        <i className="iconfont icon-notification">{/**/}</i>
-                    </button>
-                    <div className="volume">
-                        <Slider
-                            min={0}
-                            max={100}
-                            value={vol}
-                            tipFormatter={val => val + "%"}
-                            onChange={(val) => {
-                                $audio.current.volume = val / 100;
-                            }}
-                        />
-                    </div>
-                    <div className="icon" onClick={() => {
-                        dispatch(togglePanel())
-                    }}>
-                        <i className="iconfont icon-list"></i>
-                    </div>
-                </div>
-            </div>
-            <Drawer
+                <Drawer
                     title=""
                     className="player-list"
                     placement="right"
@@ -338,7 +372,9 @@ function Player() {
                         </Scroll>
                     </div>
                 </Drawer>
-        </div>
+            </div>
+
+        </React.Fragment>
     );
 }
 

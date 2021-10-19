@@ -12,10 +12,10 @@ export const login = function (name, password, type = 'phone') {
     })
 };
 
-export const loginState = function (uid) {
+export const loginState = function () {
     const url = `/api/login/status`;
     return axios.post(url, {
-        uid
+
     }).then((res) => {
         return Promise.resolve(res.data)
     })

@@ -14,7 +14,7 @@ export const getLikelistThunk = createAsyncThunk(
     }
 )
 export const likeSlice = createSlice({
-    name: 'like',
+    name: 'search-result',
     initialState,
     reducers: {
    

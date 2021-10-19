@@ -138,10 +138,15 @@ export const togglePrev = () => (dispatch, getState) => {
         if (index === -1) {
             index = 0
         }
+        if(!list[index].url){
+            index = index + 1
+        }
         dispatch(changeIndex(index))
     }
 };
+export const skipForward=()=>()=>{
 
+}
 function loop(dispatch) {
     dispatch(updateTime(0))
     dispatch(changePlay(true))

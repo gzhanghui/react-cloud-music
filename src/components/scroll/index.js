@@ -26,7 +26,7 @@ class Scroll extends Component {
     }
 
     componentDidMount() {
-         this.scroll = new BScroll(this.wrapper.current, {
+        this.scroll = new BScroll(this.wrapper.current, {
             scrollY: true,
             scrollbar: this.props.scrollbar,
             mouseWheel: {
@@ -42,10 +42,13 @@ class Scroll extends Component {
 
     }
     scrollToElement(el, time, offsetX, offsetY, easing) {
-        this.scroll&&this.scroll.scrollToElement(el, time, offsetX, offsetY, easing)
+        this.scroll && this.scroll.scrollToElement(el, time, offsetX, offsetY, easing)
     }
-    scrollTo(x, y, time, easing, extraTransform, isSilent){
-        this.scroll&&this.scroll.scrollTo(x, y, time, easing, extraTransform, isSilent)
+    refresh() {
+        this.scroll.refresh();
+    }
+    scrollTo(x, y, time, easing, extraTransform, isSilent) {
+        this.scroll && this.scroll.scrollTo(x, y, time, easing, extraTransform, isSilent)
     }
 }
 
@@ -57,7 +60,17 @@ Scroll.propTypes = {
     scrollbar: PropTypes.oneOfType([
         PropTypes.object,
         PropTypes.bool,
-    ])
+    ]),
+    scrollX: PropTypes.oneOfType([
+        PropTypes.bool
+    ]),
+    scrollY: PropTypes.oneOfType([
+        PropTypes.bool
+    ]),
+    eventPassthrough: PropTypes.oneOfType([
+        PropTypes.string
+    ]),
+
 
 }
 Scroll.defaultProps = {
@@ -65,7 +78,10 @@ Scroll.defaultProps = {
     scrollbar: {
         fade: true,
         interactive: true,
-    }
+    },
+    scrollX: false,
+    scrollY: true,
+    eventPassthrough:'vertical'
 }
 
 export default Scroll
