@@ -1,5 +1,6 @@
-import { getSongUrl } from 'apis/home'
 
+import { getSongUrl } from 'apis/home'
+import utils from '@/common/js/util'
 export function formatName(data,field='name') {
     let ret = []
     if (!data) return ''
@@ -17,7 +18,7 @@ export function createSong(data) {
         artists: song.artists,
         album: song.album,
         albumName: song.album.name,
-        duration: song.duration,
+        duration: utils.durationToTime(song.duration) ,
         image: data.picUrl,
         url: data.url
     }
@@ -39,3 +40,4 @@ export function processSongsUrl(songs) {
         return songs
     })
 }
+

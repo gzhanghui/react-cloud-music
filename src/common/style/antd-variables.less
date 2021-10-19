@@ -1,10 +1,10 @@
 @layout-header-padding: 0 20px;
 @layout-footer-padding: 16px 50px;
-@background-color-light: rgba(0, 0, 0,1);
-
+// @background-color-light: rgba(0, 0, 0,1);
+@text: hsla(0,0%,100%,.6);
 .ant-card{
     background-color: transparent;
-    color: @text-color;
+    color:@text;
     .ant-card-head{
         border: 0;
         color: @white;
@@ -40,6 +40,7 @@
 }
 .ant-table{
     background-color: transparent;
+    color:@text;
 }
 .ant-input-affix-wrapper, .ant-input{
     background-color: transparent;
@@ -54,20 +55,37 @@
     color: @primary-color;
 }
 .ant-input-affix-wrapper{
-    border-color: rgba(255, 255, 255,0.25);
+    // border-color: rgba(255, 255, 255,0.25);
     border-radius: 15px;
     padding: 2px 11px;
     input{
         height: 26px;
     }
 }
-.rc-virtual-list-scrollbar-thumb{
-    background: @color-3 !important;
+
+.ant-table-title + .ant-table-container table > thead > tr:first-child th:first-child,
+.ant-table.ant-table-small .ant-table-tbody > tr > td:first-child{
+    // padding-left: 0;
+}
+
+.ant-table-content .ant-table-thead > tr > th{
+    background-color:  rgba(0, 0, 0,0.3);
+    color:  @text-color-title;
+    border: 0;
+    &:first-child{
+        // padding-left: 0;
+    }
+}
+ 
+.ant-table-tbody > tr.ant-table-row{
+    &:hover > td{
+        background-color: @color-0-3;
+    }
 }
 .ant-slider{
     &-rail{
         height: 2px;
-        // background-color: @color-4; 
+        background-color: #55585F; 
     }
     &-track{
         height: 2px;
@@ -91,8 +109,8 @@
     }
     &:hover {
         .ant-slider-rail{
-            background-color:#55585F;
-        }
+            background-color:#55585F; //D8D8D8
+        } 
         .ant-slider-track{
             background-color:@white; // #00c000
         }
@@ -107,7 +125,7 @@
         border-radius: 1px;
         transition: background-color 0.3s;
         top: 4px;
-        width: 100px;
+        width: 0;
         z-index: 0;
     }
 }

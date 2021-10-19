@@ -1,0 +1,49 @@
+.playlist-count{
+ padding-top: 12px;
+ padding-bottom: 12px;
+}
+.create-info{
+    margin-bottom: 12px;
+}
+.like-button{
+    background-color: transparent;
+    border: 0;
+    cursor: pointer;
+}
+.confirm-title{
+    font-weight: 400;
+    font-size: 15px;
+}
+.ant-table-cell{
+    &:hover{
+        .state-btn{
+            opacity: 1;
+        }
+    }
+}
+.table-player-control{
+    display: flex;
+    height: 100%;
+    width: 100%;
+    .name{
+        .ellipsis();
+        max-width: 200px;
+    }
+    .play-state{
+        padding-left: 12px;
+    }
+    .state-icon{
+        margin-right: 12px;
+        display: inline-block;
+    }
+    .state-btn{
+        opacity: 0;
+        transition: all .2s;
+    }
+
+    .anticon{
+        font-size: 16px;
+        position: relative;
+        left: 12px;
+    }
+}

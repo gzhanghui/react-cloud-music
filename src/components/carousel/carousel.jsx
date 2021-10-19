@@ -3,8 +3,8 @@ import React ,{Component} from 'react';
 import classnames from 'classnames';
 import PropTypes from 'prop-types';
 import { throttle } from 'lodash';
-import View from '@/common/js/libs/view';
-import { addResizeListener, removeResizeListener } from '@/common/js/utils/resize-event';
+import View from 'common/js/view';
+import { addResizeListener, removeResizeListener } from 'common/js/resize-event';
 import {ComponentContext} from './component-context'
 export default class Carousel extends Component {
   constructor(props) {
@@ -29,11 +29,11 @@ export default class Carousel extends Component {
     this.resetItemPosition = this._resetItemPosition.bind(this)
   }
 
- 
+
 
   componentDidMount() {
 
-  
+
     if (this.props.initialIndex < this.state.items.length && this.props.initialIndex >= 0) {
       this.setState({
         activeIndex: this.props.initialIndex
@@ -225,7 +225,7 @@ export default class Carousel extends Component {
                 </View>
               )
             }
-        
+
             {
               arrow !== 'never' && (
                 <View show={arrow === 'always' || hover}>

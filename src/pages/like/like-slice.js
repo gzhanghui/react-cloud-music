@@ -1,33 +1,49 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { getLikelist } from 'apis/likes';
-import { processSongsUrl, formatName } from 'common/js/song'
+import { getLikelist,getPlaylist } from '@/apis/likes';
+import { processSongsUrl, formatName } from '@/common/js/song'
+import utils from 'common/js/util';
 const initialState = {
     likeList: [],
+    playlist: []
 };
 
-export const getLikelistThunk = createAsyncThunk(
-    'like/getLikelist',
+export const getLikeListThunk = createAsyncThunk(
+    'like/getLikeList',
     async (uid) => {
         const list = await getLikelist(uid)
         const data = await processSongsUrl(_normalizeSongs(list.songs))
         return data.filter(item=>item.url)
     }
 )
+
+export const getPlaylistThunk = createAsyncThunk(
+    'like/getPlaylist',
+    async (uid) => {
+        const res = await getPlaylist(uid)
+        return res.playlist
+    }
+)
 export const likeSlice = createSlice({
     name: 'like',
     initialState,
     reducers: {
-   
+
     },
     extraReducers: {
-        [getLikelistThunk.fulfilled]: (state, action) => {
-            console.log(action.payload)
+        [getLikeListThunk.fulfilled]: (state, action) => {
             state.likeList = action.payload;
-        }
+        },
+        [getPlaylistThunk.fulfilled]:(state, action) => {
+            state.playlist = action.payload;
+        },
     },
 });
 
 export const likeList = (state) => state.like.likeList;
+export const playlist = (state) => state.like.playlist
+export const getLikeList = () => (dispatch) => {
+    dispatch(getLikeListThunk());
+};
 
 export default likeSlice.reducer;
 
@@ -48,7 +64,7 @@ function createSong(data){
         artists: data.ar,
         album: data.al,
         albumName: data.al.name,
-        duration: data.dt,
+        duration: utils.durationToTime(data.dt),
         image: data.al.picUrl,
         url: data.url
     }

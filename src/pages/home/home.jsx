@@ -26,7 +26,7 @@ export default function Home() {
         interval="4000"
         type="card"
         height="200px"
-        autoplay={true}
+        autoplay={false}
         onChange={(index) => {
           dispatch(changeIndex(index));
         }}

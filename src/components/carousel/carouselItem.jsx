@@ -2,7 +2,7 @@
 
 import React, { Component } from 'react';
 import classnames from 'classnames';
-import View from '@/common/js/libs/view.js';
+import View from 'common/js/view.js';
 import PropTypes from 'prop-types';
 import { ComponentContext } from './component-context'
 export default class CarouselItem extends Component {

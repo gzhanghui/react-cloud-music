@@ -1,0 +1,54 @@
+.ant-tabs-top>.ant-tabs-nav::before {
+  border-bottom: none;
+}
+
+h5.ant-typography {
+  color: @text-color-title  !important
+}
+
+.top {
+  display: flex;
+
+  .brief-desc {
+    line-height: 1.54;
+    flex: 1;
+    height: 174px;
+    padding: 0 16px 0 24px;
+    overflow: hidden;
+  }
+}
+
+.artist-album {
+  display: grid;
+  // flex-wrap: wrap;
+  grid-row-gap: 24px;
+  grid-column-gap: 24px;
+  grid-template-columns: repeat(auto-fill, 102px);
+
+  &-item {
+    // margin: 24px;
+    margin-left: 0;
+    text-align: center;
+  }
+
+  .album-cover {
+    border-radius: 4px;
+  }
+}
+
+.artist-mv {
+  display: flex;
+  flex-wrap: wrap;
+ 
+
+  &-item {
+    width: 20%;
+   
+    &-box{
+      margin-right: 20px;
+    }
+    img{
+      width: 100%;
+    }
+  }
+}

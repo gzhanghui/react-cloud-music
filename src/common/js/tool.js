@@ -11,8 +11,8 @@ import { padStart } from 'lodash'
 
 export const formatTime = (time) => {
   time = time | 0
-  const minute = padStart(`${parseInt(time / 60 / 1000)}`,2,'0')
-  const second = padStart(`${parseInt((time/1000) % 60)}`,2,'0' )
+  const minute = padStart(`${parseInt(time / 60 )}`,2,'0')
+  const second = padStart(`${parseInt((time) % 60)}`,2,'0' )
   return `${minute}:${second}`
 }
 

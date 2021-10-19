@@ -1,6 +1,6 @@
 const CracoLessPlugin = require('craco-less');
 const path = require("path");
-const resolve = dir => path.resolve(__dirname, dir);    
+const resolve = dir => path.resolve(__dirname, dir);
 module.exports = {
     plugins: [
         {
@@ -9,13 +9,23 @@ module.exports = {
                 lessLoaderOptions: {
                     lessOptions: {
                         modifyVars: {
-                            '@primary-color': '#20BF76',
-                            '@black': '#05030D',
-                            // '@text-color': '#81858B',
-                            '@text-color': '#ccc',
+                            '@primary-color': '#00cc4c',
+                            // '@text-color': 'hsla(0,0%,100%,.6)',
+                            '@text-color-secondary': 'hsla(0,0%,100%,.4)',
+                            '@text-color-title': 'hsla(0,0%,100%,.92)',
                             '@text-color-highlight': '#FFFFFF',
-                            '@component-background': 'transparent',
-                            '@background-color-light': 'rgba(0,0,0,0.18)'
+                            // '@component-background': '#191a20',
+                            '@background-opacity':'rgba(18,19,24,.9)',
+                            '@border-color':'rgba(24,25,30,.04)',
+                            '@color-0-3':'hsla(0,0%,100%,.03)',
+                            '@color-1-2':'hsla(0,0%,100%,.12)',
+                            '@color-2-5':'hsla(0,0%,100%,.25)',
+                            '@color-3':'hsla(0,0%,100%,.3)',
+                            // '@color-4':'hsla(0,0%,100%,.4)',#bdb9b9
+                            '@color-4':'#bdb9b9',
+                            '@color-5':'hsla(0,0%,100%,.5)',
+                            '@color-6':'hsla(0,0%,100%,.6)',
+                            '@color-7':'hsla(0,0%,100%,.7)'
                         },
                         javascriptEnabled: true,
                     },
@@ -42,7 +52,6 @@ module.exports = {
             '@': resolve("src"),
             'components': resolve("src/components"),
             'pages': resolve("src/pages"),
-            'store': resolve("src/store"),
             'common': resolve("src/common"),
             'apis': resolve("src/apis"),
         }

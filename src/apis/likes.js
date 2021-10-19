@@ -1,8 +1,7 @@
-import axios from 'axios';
-
+import request from '@/common/js/request';
 export const getLikelist = function (uid = `1422259951`) {
     const url = '/api/likelist';
-    return axios.get(url, {
+    return request.get(url, {
         params: {
             uid
         }
@@ -10,7 +9,7 @@ export const getLikelist = function (uid = `1422259951`) {
         return res.data
     }).then(res => {
         const ids = res.ids.join(',')
-        return axios.get(`/api/song/detail`, {
+        return request.get(`/api/song/detail`, {
             params: {
                 ids,
             }
@@ -20,4 +19,16 @@ export const getLikelist = function (uid = `1422259951`) {
     })
 };
 
+
+
+export const getPlaylist = function (uid = `1422259951`) {
+    const url = '/api/user/playlist';
+    return request.get(url, {
+        params: {
+            uid
+        }
+    }).then((res) => {
+        return res.data
+    })
+};
 

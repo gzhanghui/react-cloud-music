@@ -1,11 +1,12 @@
-const isMobile = /mobile/i.test(window.navigator.userAgent);
-
+import { padStart } from 'lodash'
+import * as dayjs from 'dayjs'
+import duration from 'dayjs/plugin/duration'
+dayjs.extend(duration)
 const utils = {
     /**
      * Parse second to time string
-     *
-     * @param {Number} second
-     * @return {String} 00:00 or 00:00:00
+     * @param second
+     * @returns {string} 00:00 or 00:00:00
      */
     secondToTime: (second) => {
         const add0 = (num) => (num < 10 ? '0' + num : '' + num);
@@ -14,8 +15,19 @@ const utils = {
         const sec = Math.floor(second - hour * 3600 - min * 60);
         return (hour > 0 ? [hour, min, sec] : [min, sec]).map(add0).join(':');
     },
-
-    isMobile: isMobile,
+    /**
+     * Parse song duration
+     * @param duration
+     * @returns {string}
+     */
+    durationToTime(duration) {
+        const { $d } = dayjs.duration(duration)
+        return `${padStart($d.minutes, 2, '0')}:${padStart($d.seconds, 2, '0')}`
+    },
+    formatTime(time, format = "YYYY-MM-DD") {
+        return dayjs(time).format(format)
+    },
+    isMobile: /mobile/i.test(window.navigator.userAgent),
 
     storage: {
         set: (key, value) => {
@@ -24,7 +36,29 @@ const utils = {
 
         get: (key) => localStorage.getItem(key),
     },
-
+    elementsContains: (elements, target) => {
+        return elements.some((ele) => ele && ele.contains(target));
+    },
+    getTargetFromEvent: (e) => {
+        const target = e.target
+        if (e.composed && target.shadowRoot) {
+            return (e.composedPath?.()[0] || target);
+        }
+        return target;
+    },
+    insertArray: (arr, val, compare, maxLen) => {
+        const index = arr.findIndex(compare)
+        if (index === 0) {
+            return
+        }
+        if (index > 0) {
+            arr.splice(index, 1)
+        }
+        arr.unshift(val)
+        if (maxLen && arr.length > maxLen) {
+            arr.pop()
+        }
+    },
     /**
      * get random order, using Fisher–Yates shuffle
      */
@@ -38,8 +72,9 @@ const utils = {
             }
             return arr;
         }
+
         return shuffle(
-            [...Array(length)].map(function(item, i) {
+            [...Array(length)].map(function (item, i) {
                 return i;
             })
         );

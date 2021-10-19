@@ -1,11 +1,98 @@
+.search-wrap {
+    position: relative;
+    width: 340px;
+
+    .search-panel {
+        position: absolute;
+        top: 52px;
+        left: 0;
+        width: 100%;
+        height: 435px;
+        background-color: @component-background;
+        z-index: 999;
+        border-color: rgba(18, 19, 24, .9);
+        background-color: rgba(18, 19, 24, .9);
+        padding: 3px 0 6px;
+    }
+
+    .search-result-item {
+        display: block;
+        height: 32px;
+        padding: 0 10px 0 15px;
+        line-height: 32px;
+        font-size: 14px;
+        color: hsla(0, 0%, 100%, .7);
+        cursor: pointer;
+
+        .search-result-num {
+            display: inline-block;
+            width: 18px;
+            height: 18px;
+            line-height: 18px;
+            color: @color-7;
+            border-radius: 2px;
+            background-color: @color-1-2;
+            margin-right: 10px;
+            text-align: center;
+
+            &.top {
+                background-image: linear-gradient(233deg, #00d099, #00cc36);
+            }
+        }
+
+        &.search-item-history {
+            display: flex;
+            justify-content: space-between;
+            .clear-history-btn{
+                display: none;
+            }
+            &:hover{
+                .clear-history-btn{
+                    display: inline-block;
+                }
+            }
+        }
+        &.search-item-artist{
+            height: 40px;
+            line-height: 40px;
+            .artist{
+                display: inline-block;
+                margin-left: 12px;
+            }
+        }
+        &:hover{
+            color: #00cc4c;
+            background-color: hsla(0,0%,100%,.03);
+        }
+    }
+
+    .search-result-title {
+        color: hsla(0, 0%, 100%, .4);
+        height: 32px;
+        padding: 0 10px 0 15px;
+        line-height: 32px;
+        font-size: 14px;
+        display: flex;
+        justify-content: space-between;
+    }
+}
+
 .category-search-dropdown {
     .title {
         color: @color-4;
         // padding: @margin-xss @margin-md @margin-xss @margin-sm;
         display: flex;
         align-items: center;
-        height: 32px;
+        min-height: 32px;
         font-size: 14px;
+    }
+
+    .ant-image {
+        height: 100%;
+
+        img {
+            height: 100%;
+        }
     }
 
     .history-title {
@@ -27,19 +114,23 @@
             }
         }
     }
-    .history-item{
+
+    .history-item {
         display: flex;
         justify-content: space-between;
-        span{
+
+        span {
             .ellipsis();
         }
-        .icon-delete{
+
+        .icon-delete {
             width: 32px;
             height: 32px;
             display: inline-block;
             text-align: center;
         }
     }
+
     .ant-select-item {
         height: 32px;
         padding: 0 16px 0 15px;
@@ -50,11 +141,11 @@
 
 
 .ant-select-clear {
-    color: @text-color;
+    color: @text;
 }
 
 .hot-search {
-    color: @text-color;
+    color: @text;
     padding: @margin-xss @margin-md @margin-xss @margin-sm;
 
     i.icon-hot {
@@ -69,6 +160,7 @@
 .search-item {
     display: flex;
     align-items: center;
+
     .search-result-num {
         display: inline-block;
         width: 18px;

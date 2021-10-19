@@ -8,7 +8,6 @@
         "common/*": ["src/common/*"],
         "components/*": ["src/components/*"],
         "pages/*": ["src/pages/*"],
-        "store/*": ["src/store/*"],
         "apis/*":["src/api/*"]
       }
     },

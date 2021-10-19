@@ -1,8 +1,7 @@
-import axios from 'axios';
-
+import request from '@/common/js/request';
 export const getPersonalized = function (limit) {
     const url = '/api/personalized';
-    return axios.get(url, {
+    return request.get(url, {
         params: limit
     }).then((res) => {
         return Promise.resolve(res.data)
@@ -13,7 +12,7 @@ export const getPersonalized = function (limit) {
 
 export const getBanner = function (type = 2) {
     const url = '/api/banner';
-    return axios.get(url, {
+    return request.get(url, {
         params: type
     }).then((res) => {
         return Promise.resolve(res.data)
@@ -23,7 +22,7 @@ export const getBanner = function (type = 2) {
 
 export const getHotwallList = function () {
     const url = '/api/comment/hotwall/list';
-    return axios.get(url).then((res) => {
+    return request.get(url).then((res) => {
         return Promise.resolve(res.data)
     })
 }
@@ -31,13 +30,13 @@ export const getHotwallList = function () {
 
 export const getNewSong = function () {
     const url = '/api/personalized/newsong';
-    return axios.get(url).then((res) => {
+    return request.get(url).then((res) => {
         return Promise.resolve(res.data)
     })
 }
 export const getSongUrl = function (id) {
     const url = '/api/song/url';
-    return axios.get(url, {
+    return request.get(url, {
         params: {
             id,
         }
@@ -48,7 +47,7 @@ export const getSongUrl = function (id) {
 
 export const songDetail=function(ids){
     const url = '/api/song/detail';
-    return axios.get(url, {
+    return request.get(url, {
         params: {
             ids,
         }
@@ -60,7 +59,7 @@ export const songDetail=function(ids){
 //lyric
 export const getLyric=function(id){
     const url = '/api/lyric';
-    return axios.get(url, {
+    return request.get(url, {
         params: {
             id,
         }
@@ -68,3 +67,5 @@ export const getLyric=function(id){
         return Promise.resolve(res.data)
     })
 }
+
+
