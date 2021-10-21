@@ -1,5 +1,4 @@
 
-import { getSongUrl } from 'apis/home'
 import utils from '@/common/js/util'
 export function formatName(data,field='name') {
     let ret = []
@@ -9,35 +8,19 @@ export function formatName(data,field='name') {
     })
     return ret.join('/')
 }
-export function createSong(data) {
-    const { song } = data
+
+
+export function createSong({name,id, artists,album,duration, image,url}) {
     return  {
-        name: data.name,
-        id: data.id,
-        artistsName: formatName(song.artists),
-        artists: song.artists,
-        album: song.album,
-        albumName: song.album.name,
-        duration: utils.durationToTime(song.duration) ,
-        image: data.picUrl,
-        url: data.url
+        name,
+        id,
+        artistsName: formatName(artists),
+        artists,
+        album,
+        albumName: album.name,
+        duration: utils.durationToTime(duration) ,
+        image,
+        url
     }
-}
-export function processSongsUrl(songs) {
-    if (!songs.length) {
-        return Promise.resolve(songs)
-    }
-    const ids = songs.map(item => item.id)
-    return getSongUrl(ids.join(',')).then((res) => {
-        songs = songs.filter((song) => {
-            const item = res.data.find(item => song.id === item.id)
-            if (item) {
-                song.url = item.url
-                return true
-            }
-            return false
-        })
-        return songs
-    })
 }
 

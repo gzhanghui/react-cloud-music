@@ -104,7 +104,6 @@ function Player() {
       ref.current.src = song.url;
       controls.play();
     }
-
     /* 绘制旋转的CD */
     if (cdRef.current) {
       cdRef.current.drawCover(song.image);

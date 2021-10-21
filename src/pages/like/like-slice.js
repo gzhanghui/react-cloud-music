@@ -1,7 +1,5 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { getLikelist,getPlaylist } from '@/apis/likes';
-import { processSongsUrl, formatName } from '@/common/js/song'
-import utils from 'common/js/util';
 const initialState = {
     likeList: [],
     playlist: []
@@ -11,8 +9,7 @@ export const getLikeListThunk = createAsyncThunk(
     'like/getLikeList',
     async (uid) => {
         const list = await getLikelist(uid)
-        const data = await processSongsUrl(_normalizeSongs(list.songs))
-        return data.filter(item=>item.url)
+        return list
     }
 )
 
@@ -41,6 +38,7 @@ export const likeSlice = createSlice({
 
 export const likeList = (state) => state.like.likeList;
 export const playlist = (state) => state.like.playlist
+
 export const getLikeList = () => (dispatch) => {
     dispatch(getLikeListThunk());
 };
@@ -48,24 +46,24 @@ export const getLikeList = () => (dispatch) => {
 export default likeSlice.reducer;
 
 
-function _normalizeSongs(list) {
-    let ret = []
-    list.forEach((musicData) => {
-        ret.push(createSong(musicData))
-    })
-    return ret
-}
+// function _normalizeSongs(list) {
+//     let ret = []
+//     list.forEach((musicData) => {
+//         ret.push(createSong(musicData))
+//     })
+//     return ret
+// }
 
-function createSong(data){
-    return  {
-        name: data.name,
-        id: data.id,
-        artistsName: formatName(data.ar),
-        artists: data.ar,
-        album: data.al,
-        albumName: data.al.name,
-        duration: utils.durationToTime(data.dt),
-        image: data.al.picUrl,
-        url: data.url
-    }
-}
+// function createSong(data){
+//     return  {
+//         name: data.name,
+//         id: data.id,
+//         artistsName: formatName(data.ar),
+//         artists: data.ar,
+//         album: data.al,
+//         albumName: data.al.name,
+//         duration: utils.durationToTime(data.dt),
+//         image: data.al.picUrl,
+//         url: data.url
+//     }
+// }

@@ -29,6 +29,7 @@ class Scroll extends Component {
         this.scroll = new BScroll(this.wrapper.current, {
             scrollY: true,
             scrollbar: this.props.scrollbar,
+            bounce:false,
             mouseWheel: {
                 speed: 20,
                 invert: false,

@@ -2,7 +2,8 @@ import React, { useEffect } from "react";
 import { get } from "lodash";
 import { Link, useHistory } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import { Table, Tabs, Card, Avatar, Typography, Button } from "antd";
+import { Tabs, Card, Avatar, Typography, Button } from "antd";
+import SongList from "components/song-list/song-list";
 import utils from "@/common/js/util";
 import {
   artistDetail,
@@ -14,8 +15,9 @@ import {
   artistDesc,
   getArtistDescThunk,
   artistMv,
-  getArtistMvThunk
+  getArtistMvThunk,
 } from "./search-result-slice";
+// eslint-disable-next-line no-unused-vars
 import { replacePlayList } from "@/components/player/player-slice";
 export default function SearchReslut() {
   const dispatch = useDispatch();
@@ -33,7 +35,6 @@ export default function SearchReslut() {
     dispatch(getArtistDescThunk(id));
     dispatch(getArtistMvThunk(id));
   }, []);
- 
 
   function callback(key) {
     console.log(key);
@@ -60,33 +61,13 @@ export default function SearchReslut() {
 
       <Tabs defaultActiveKey="1" onChange={callback}>
         <Tabs.TabPane tab="单曲" key="1">
-          <Table
-            rowKey="id"
-            title={() => (
-              <Button
-                type="primary"
-                icon={<i className="iconfont icon-play float-left"></i>}
-              >
-                播放全部
-              </Button>
-            )}
-            showHeader={true}
-            pagination={false}
-            columns={[
-              { dataIndex: "name", title: "歌曲名" },
-              { dataIndex: "albumName", title: "专辑" },
-              { dataIndex: "duration", title: "时长" },
-            ]}
-            dataSource={topSong}
-            size="small"
-            onRow={() => {
-              return {
-                onClick: () => {
-                  dispatch(replacePlayList(topSong));
-                },
-              };
-            }}
-          />
+          <Button
+            type="primary"
+            icon={<i className="iconfont icon-play float-left"></i>}
+          >
+            播放全部
+          </Button>
+          <SongList songList={topSong}></SongList>
         </Tabs.TabPane>
         <Tabs.TabPane tab="专辑" key="2">
           <ul className="artist-album">
@@ -122,17 +103,15 @@ export default function SearchReslut() {
           <ul className="artist-mv">
             {mv.map((item) => (
               <li key={item.id} className="artist-mv-item">
-                <Link 
-                to={{
-                  pathname: "/mv-detail",
-                  search: `?id=${item.id}`,
-                }}
-                className="artist-mv-item-box" onClick={()=>{
-                }}>
-                  <img
-                    src={item.imgurl16v9}
-                    className="mv-cover"
-                  />
+                <Link
+                  to={{
+                    pathname: "/mv-detail",
+                    search: `?id=${item.id}`,
+                  }}
+                  className="artist-mv-item-box"
+                  onClick={() => {}}
+                >
+                  <img src={item.imgurl16v9} className="mv-cover" />
                   <i className="iconfont icon-videofill"></i>
                   <div>{item.playCount}</div>
                   <div>{item.duration}</div>

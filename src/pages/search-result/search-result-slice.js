@@ -1,7 +1,5 @@
-import utils from '@/common/js/util'
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { getArtistDetail, getArtistTopSong, getArtistAlbum, getArtistDesc, getArtistMv } from 'apis/search-result'
-import { processSongsUrl, formatName } from 'common/js/song'
 const initialState = {
     artistDetail: [],
     artistTopSong: [],
@@ -25,8 +23,7 @@ export const getArtistTopSongThunk = createAsyncThunk(
     'artist/top',
     async (id) => {
         const res = await getArtistTopSong(id)
-        const data = await processSongsUrl(_normalizeSongs(res.songs))
-        return data.filter(item => item.url)
+        return res
     }
 )
 
@@ -77,7 +74,7 @@ export const searchResultSlice = createSlice({
         [getArtistMvThunk.fulfilled]: (state, action) => {
             state.mv = action.payload;
         }
-      
+
     },
 });
 
@@ -89,38 +86,3 @@ export const artistDesc = (state) => state.searchResult.artistDesc;
 export const artistMv = (state) => state.searchResult.mv;
 
 export default searchResultSlice.reducer;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-function _normalizeSongs(list) {
-    let ret = []
-    list.forEach((musicData) => {
-        ret.push(createSong(musicData))
-    })
-    return ret
-}
-
-function createSong(data) {
-    return {
-        name: data.name,
-        id: data.id,
-        artistsName: formatName(data.ar),
-        artists: data.ar,
-        album: data.al,
-        albumName: data.al.name,
-        duration: utils.durationToTime(data.dt),
-        image: data.al.picUrl,
-        url: data.url
-    }
-}

@@ -1,34 +1,22 @@
 import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { get } from "lodash";
-import { Table, Card, Row, Col, Image, Button, Avatar, Modal } from "antd";
-import {
-  HeartOutlined,
-  PlayCircleOutlined,
-  PauseCircleFilled,
-  PlayCircleFilled,
-} from "@ant-design/icons";
-import PlayingIcon from "components/player/play-icon";
+import { Card, Row, Col, Image, Button, Avatar, Modal } from "antd";
+import { PlayCircleOutlined } from "@ant-design/icons";
 import utils from "common/js/util";
+import SongList from "components/song-list/song-list";
+import { replacePlayList, changeIndex } from "components/player/player-slice";
+
 import {
   likeList,
   playlist,
   getLikeListThunk,
   getPlaylistThunk,
 } from "./like-slice";
-import {
-  replacePlayList,
-  changeIndex,
-  audioState,
-  currentIndex,
-  changePlaying,
-} from "components/player/player-slice";
 
 export default function Like() {
   const likeData = useSelector(likeList);
   const playData = useSelector(playlist);
-  const state = useSelector(audioState);
-  const playIndex = useSelector(currentIndex);
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(getLikeListThunk());
@@ -96,64 +84,7 @@ export default function Like() {
           </Card>
         </Col>
       </Row>
-      <Table
-        rowKey="id"
-        showHeader={true}
-        pagination={false}
-        columns={[
-          {
-            dataIndex: "duration",
-            title: " ",
-            render: () => (
-              <button className="like-button">
-                <HeartOutlined />
-              </button>
-            ),
-          },
-          {
-            dataIndex: "name",
-            title: "歌曲名",
-            render: (text, record, index) => (
-              <div className="table-player-control">
-                <span className="name">{text}</span>
-                <div className="play-state">
-                  {state.playing && playIndex === index ? (
-                    <React.Fragment>
-                      <PlayingIcon className="state-icon" />
-                      <PauseCircleFilled
-                        className="state-btn"
-                        onClick={() => {
-                          dispatch(changePlaying(true));
-                        }}
-                      />
-                    </React.Fragment>
-                  ) : (
-                    <PlayCircleFilled
-                      className="state-btn"
-                      onClick={() => {
-                        dispatch(changePlaying(false));
-                        dispatch(changeIndex(index));
-                      }}
-                    />
-                  )}
-                </div>
-              </div>
-            ),
-          },
-          { dataIndex: "artistsName", title: "歌手" },
-          { dataIndex: "albumName", title: "专辑" },
-          { dataIndex: "duration", title: "时长" },
-        ]}
-        dataSource={likeData}
-        size="small"
-        onRow={() => {
-          return {
-            onClick: () => {
-              // dispatch(replacePlayList(likeData));
-            },
-          };
-        }}
-      ></Table>
+      <SongList songList={likeData}></SongList>
     </Card>
   );
 }

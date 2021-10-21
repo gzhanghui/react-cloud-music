@@ -1,19 +1,12 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { getBanner, getPersonalized, getNewSong } from 'apis/home';
-import { processSongsUrl, createSong } from 'common/js/song'
 const initialState = {
     bannerList: [],
     newSongs: [],
     personalized: [],
     index: -1
 };
-function _normalizeSongs(list) {
-    let ret = []
-    list.forEach((musicData) => {
-        ret.push(createSong(musicData))
-    })
-    return ret
-}
+
 export const bannerThunk = createAsyncThunk(
     'home/getBanner',
     async () => {
@@ -33,8 +26,7 @@ export const getNewSongThunk = createAsyncThunk(
     'home/getNewSong',
     async () => {
         const list = await getNewSong()
-        const data = await processSongsUrl(_normalizeSongs(list.result))
-        return data
+        return list
     }
 )
 

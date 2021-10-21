@@ -1,22 +1,26 @@
 import request from '@/common/js/request';
-export const getLikelist = function (uid = `1422259951`) {
+import { get } from 'lodash'
+import { getSongUrl, songDetail } from 'apis/song'
+import { createSong } from 'common/js/song'
+export const getLikelist = async function (uid = `1422259951`) {
     const url = '/api/likelist';
-    return request.get(url, {
-        params: {
-            uid
-        }
-    }).then((res) => {
-        return res.data
-    }).then(res => {
-        const ids = res.ids.join(',')
-        return request.get(`/api/song/detail`, {
-            params: {
-                ids,
-            }
-        }).then((res) => {
-            return Promise.resolve(res.data)
+    try {
+        const res = await request.get(url, { params: { uid } })
+        const ids = res.data.ids.join(',')
+        const detail = await songDetail(ids)
+        const result = await getSongUrl(ids)
+        const data = detail.songs.map(song => {
+            const current = result.data.find(item => item.id === song.id)
+            return current ? createSong({
+                name: song.name, id: song.id, artists: song.ar,
+                album: song.al, duration: song.dt, image: get(song, 'al.picUrl'),
+                url: current.url, metadata: song
+            }) : { ...song }
         })
-    })
+        return data
+    } catch (error) {
+        console.log(error)
+    }
 };
 
 

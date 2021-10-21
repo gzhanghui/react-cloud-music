@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { getLyric } from 'apis/home'
+import {uniqBy} from 'lodash'
+import { getLyric } from 'apis/song'
 
 export const PLAY_MODE = {
     sequence: 0,
@@ -26,7 +27,7 @@ const initialState = {
     mode: PLAY_MODE.sequence
 };
 export const lyricThunk = createAsyncThunk(
-    'player/getLyric',
+    'player/lyric',
     async (id) => {
         const res = await getLyric(id);
         return res.lrc.lyric;
@@ -36,8 +37,8 @@ export const playerSlice = createSlice({
     name: 'player',
     initialState,
     reducers: {
-        addSong: (state, action) => {
-            state.playList = [action.payload, ...state.playList]
+        insertSong: (state, action) => {
+            state.playList = uniqBy([action.payload, ...state.playList])
         },
         replacePlayList: (state, action) => {
             state.playList = action.payload
@@ -90,6 +91,7 @@ export const {
     changeCurrentLyric,
     changeMode,
     changeState,
+    insertSong
 } = playerSlice.actions;
 
 export const fullScreen = (state) => state.player.fullScreen;

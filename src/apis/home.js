@@ -1,4 +1,6 @@
 import request from '@/common/js/request';
+import { getSongUrl } from 'apis/song'
+import { createSong } from 'common/js/song'
 export const getPersonalized = function (limit) {
     const url = '/api/personalized';
     return request.get(url, {
@@ -27,45 +29,22 @@ export const getHotwallList = function () {
     })
 }
 
-
-export const getNewSong = function () {
+export const getNewSong = async function () {
     const url = '/api/personalized/newsong';
-    return request.get(url).then((res) => {
-        return Promise.resolve(res.data)
+    const res = await request.get(url)
+    let ids = res.data.result.map(item => item.id)
+    ids = ids.join(',')
+    const result = await getSongUrl(ids)
+    const data = res.data.result.map(item => {
+        const { song } = item
+        const current = result.data.find(m => m.id === song.id)
+        return current ? createSong({
+            name: item.name, id: item.id, artists: song.artists,
+            album: song.album, duration: song.duration, image: item.picUrl,
+            url: current.url, metadata: item
+        }) : { ...item }
     })
-}
-export const getSongUrl = function (id) {
-    const url = '/api/song/url';
-    return request.get(url, {
-        params: {
-            id,
-        }
-    }).then((res) => {
-        return Promise.resolve(res.data)
-    })
-}
-
-export const songDetail=function(ids){
-    const url = '/api/song/detail';
-    return request.get(url, {
-        params: {
-            ids,
-        }
-    }).then((res) => {
-        return Promise.resolve(res.data)
-    })
-}
-
-//lyric
-export const getLyric=function(id){
-    const url = '/api/lyric';
-    return request.get(url, {
-        params: {
-            id,
-        }
-    }).then((res) => {
-        return Promise.resolve(res.data)
-    })
+    return data
 }
 
 
