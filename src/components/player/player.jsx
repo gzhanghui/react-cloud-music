@@ -52,7 +52,6 @@ function Player() {
   const playState = useSelector(audioState);
   const play = useSelector(playing);
   // dom
-  const $cd = useRef(null);
   const $lyric = useRef(null);
   const $canvas = useRef(null);
   const $scroll = useRef(null);
@@ -60,8 +59,7 @@ function Player() {
   const $miniCover = useRef(null);
   const $progress = useRef(null);
   // ref
-  const readyRef = useRef(false);
-  const cdRef = useRef(null);
+  const coverRef = useRef(null);
   const lyricRef = useRef(null);
   const updateRef = useRef(false);
 
@@ -105,10 +103,10 @@ function Player() {
       controls.play();
     }
     /* 绘制旋转的CD */
-    if (cdRef.current) {
-      cdRef.current.drawCover(song.image);
+    if (coverRef.current) {
+      coverRef.current.drawCover(song.image);
     } else {
-      cdRef.current = new drawCD($canvas.current, song.image);
+      coverRef.current = new drawCD($canvas.current, song.image);
     }
     dispatch(addSongLyric(song.id));
   }, [song]);
@@ -125,10 +123,10 @@ function Player() {
   useEffect(() => {
     if (playState.playing) {
       if (!ref.current.src) return;
-      cdRef.current && cdRef.current.start();
+      coverRef.current && coverRef.current.start();
       lyricRef.current && lyricRef.current.play();
     } else {
-      cdRef.current && cdRef.current.stop();
+      coverRef.current && coverRef.current.stop();
       lyricRef.current && lyricRef.current.stop();
     }
   }, [playState.playing]);
@@ -189,7 +187,6 @@ function Player() {
                     (s, xy) => `translate(${xy[0]}px, ${xy[1]}px) scale(${s}) `
                   ),
                 }}
-                ref={$cd}
                 className="album-cover"
               >
                 <canvas id="canvas" className="canvas" ref={$canvas}></canvas>
@@ -247,7 +244,6 @@ function Player() {
           <div className="control">
             <div className="operators">
               <button
-                disabled={!readyRef.current}
                 onClick={() => {
                   dispatch(togglePrev());
                 }}

@@ -7,6 +7,7 @@ import {
   HeartOutlined,
   PauseCircleFilled,
   PlayCircleFilled,
+  HeartFilled,
 } from "@ant-design/icons";
 import {
   changeIndex,
@@ -28,11 +29,16 @@ function PlayList(props) {
       pagination={false}
       columns={[
         {
-          dataIndex: "duration",
+          dataIndex: "islike",
           title: " ",
-          render: () => (
+          render: (text, record) => (
             <button className="like-button">
-              <HeartOutlined />
+              {text}
+              {record.islike ? (
+                <HeartFilled className="like-color" />
+              ) : (
+                <HeartOutlined />
+              )}
             </button>
           ),
         },
@@ -79,11 +85,10 @@ function PlayList(props) {
           },
           onDoubleClick: () => {
             dispatch(insertSong(songList[index]));
-            console.log(index)
-            setTimeout(()=>{
-            dispatch(changeIndex(index));
-            },400)
-            
+            console.log(index);
+            setTimeout(() => {
+              dispatch(changeIndex(index));
+            }, 400);
           },
         };
       }}

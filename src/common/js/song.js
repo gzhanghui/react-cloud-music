@@ -1,6 +1,6 @@
 
 import utils from '@/common/js/util'
-export function formatName(data,field='name') {
+export function formatName(data, field = 'name') {
     let ret = []
     if (!data) return ''
     data.forEach((s) => {
@@ -10,17 +10,21 @@ export function formatName(data,field='name') {
 }
 
 
-export function createSong({name,id, artists,album,duration, image,url}) {
-    return  {
+export function createSong({ name, id, artists, album, duration, image, url, metadata }) {
+    const islike = RegExp(/p2.music/).test(image)
+    console.log(islike, image)
+    return {
         name,
         id,
         artistsName: formatName(artists),
         artists,
         album,
         albumName: album.name,
-        duration: utils.durationToTime(duration) ,
+        duration: utils.durationToTime(duration),
         image,
-        url
+        url,
+        islike,
+        metadata
     }
 }
 

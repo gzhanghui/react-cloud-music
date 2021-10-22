@@ -44,26 +44,3 @@ export const getLikeList = () => (dispatch) => {
 };
 
 export default likeSlice.reducer;
-
-
-// function _normalizeSongs(list) {
-//     let ret = []
-//     list.forEach((musicData) => {
-//         ret.push(createSong(musicData))
-//     })
-//     return ret
-// }
-
-// function createSong(data){
-//     return  {
-//         name: data.name,
-//         id: data.id,
-//         artistsName: formatName(data.ar),
-//         artists: data.ar,
-//         album: data.al,
-//         albumName: data.al.name,
-//         duration: utils.durationToTime(data.dt),
-//         image: data.al.picUrl,
-//         url: data.url
-//     }
-// }
