@@ -1,4 +1,4 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { createSlice, createAsyncThunk,current } from '@reduxjs/toolkit';
 import {uniqBy} from 'lodash'
 import { getLyric } from 'apis/song'
 
@@ -38,7 +38,8 @@ export const playerSlice = createSlice({
     initialState,
     reducers: {
         insertSong: (state, action) => {
-            state.playList = uniqBy([action.payload, ...state.playList])
+            const list = current(state).playList
+            state.playList = uniqBy([action.payload, ...list])
         },
         replacePlayList: (state, action) => {
             state.playList = action.payload

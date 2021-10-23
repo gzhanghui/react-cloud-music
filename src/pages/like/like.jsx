@@ -12,6 +12,7 @@ import {
   playlist,
   getLikeListThunk,
   getPlaylistThunk,
+  changeSongList
 } from "./like-slice";
 
 export default function Like() {
@@ -22,7 +23,9 @@ export default function Like() {
     dispatch(getLikeListThunk());
     dispatch(getPlaylistThunk());
   }, []);
-
+  const handelSongLike = (record,index)=>{
+    dispatch(changeSongList({record,index}))
+  }
   const confirm = () => {
     Modal.confirm({
       title: (
@@ -84,7 +87,7 @@ export default function Like() {
           </Card>
         </Col>
       </Row>
-      <SongList songList={likeData}></SongList>
+      <SongList songList={likeData} handelSongLike={handelSongLike}></SongList>
     </Card>
   );
 }

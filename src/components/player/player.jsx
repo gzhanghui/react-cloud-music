@@ -88,7 +88,6 @@ function Player() {
 
   useEffect(() => {
     play ? controls.pause() : controls.play();
-    console.log(play)
   }, [play]);
   /* 音乐切换时 */
   useEffect(() => {

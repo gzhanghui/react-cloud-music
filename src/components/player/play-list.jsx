@@ -27,7 +27,7 @@ function PlayList() {
           return (
             <li
               className={classNames("item", { disabled: !song.url })}
-              key={song.id}
+              key={i}
               onClick={() => {
                 if (!song.url) {
                   message.error("error");

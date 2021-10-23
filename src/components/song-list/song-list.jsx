@@ -17,8 +17,8 @@ import {
   insertSong,
 } from "components/player/player-slice";
 
-function PlayList(props) {
-  const { songList } = props;
+function SongList(props) {
+  const { songList,handelSongLike } = props;
   const state = useSelector(audioState);
   const playIndex = useSelector(currentIndex);
   const dispatch = useDispatch();
@@ -31,9 +31,10 @@ function PlayList(props) {
         {
           dataIndex: "islike",
           title: " ",
-          render: (text, record) => (
-            <button className="like-button">
-              {text}
+          render: (text, record,index) => (
+            <button className="like-button" onClick={()=>{
+              handelSongLike(record,index)
+            }}>
               {record.islike ? (
                 <HeartFilled className="like-color" />
               ) : (
@@ -80,8 +81,7 @@ function PlayList(props) {
       size="small"
       onRow={(record, index) => {
         return {
-          onClick: (e) => {
-            console.log(e);
+          onClick: () => {
           },
           onDoubleClick: () => {
             dispatch(insertSong(songList[index]));
@@ -96,10 +96,12 @@ function PlayList(props) {
   );
 }
 
-PlayList.propTypes = {
+SongList.propTypes = {
   songList: PropTypes.oneOfType([PropTypes.array]),
+  handelSongLike:PropTypes.oneOfType([PropTypes.func])
 };
-PlayList.defaultProps = {
+SongList.defaultProps = {
   songList: [],
+  handelSongLike:()=>{}
 };
-export default PlayList;
+export default SongList;
