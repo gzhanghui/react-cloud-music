@@ -30,7 +30,7 @@ function SongList(props) {
       pagination={false}
       columns={[
         {
-          dataIndex: "islike",
+          dataIndex: "isLike",
           title: " ",
           render: (text, record, index) => (
             <button
@@ -39,7 +39,7 @@ function SongList(props) {
                 handelSongLike(record, index);
               }}
             >
-              {record.islike ? (
+              {record.isLike ? (
                 <HeartFilled className="like-color" />
               ) : (
                 <HeartOutlined />

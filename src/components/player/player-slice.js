@@ -1,13 +1,12 @@
 import { createSlice, createAsyncThunk, current } from '@reduxjs/toolkit';
 import { uniqBy } from 'lodash'
 import { getLyric } from 'apis/song'
-import {cachePlaylist} from 'common/js/cache';
+import { cachePlaylist } from 'common/js/cache';
 export const PLAY_MODE = {
     sequence: 0,
     loop: 1,
     random: 2
 }
-export const HISTORY_PLAYLIST = "HISTORY_PLAYLIST"
 
 const initialState = {
     audioState: {
@@ -23,7 +22,7 @@ const initialState = {
     songError: false,
     currentIndex: -1,
     currentLyric: '',
-    playList:cachePlaylist.get(),
+    playList: cachePlaylist.get()||[],
     panelVisible: false,
     currentLineNum: 0,
     mode: PLAY_MODE.sequence
@@ -41,8 +40,7 @@ export const playerSlice = createSlice({
     reducers: {
         insertSong: (state, action) => {
             const list = current(state).playList
-            state.playList = uniqBy([action.payload, ...list])
-            console.log(state.playList)
+            state.playList = uniqBy([action.payload, ...list],'id')
         },
         replacePlayList: (state, action) => {
             state.playList = action.payload
@@ -103,11 +101,11 @@ export const audioState = (state) => state.player.audioState;
 export const panelVisible = (state) => state.player.panelVisible;
 export const playList = (state) => state.player.playList;
 export const currentIndex = (state) => state.player.currentIndex;
-export const currentSong = (state) => state.player.playList[state.player.currentIndex] || {}
 export const playing = (state) => state.player.playing;
 export const currentLyric = (state) => state.player.currentLyric;
 export const currentLineNum = (state) => state.player.currentLineNum;
 export const mode = (state) => state.player.mode;
+export const currentSong = (state) => (state.player.playList[state.player.currentIndex]||{} )
 export const modeIcon = (state) => (state.player.mode === PLAY_MODE.sequence ? 'icon-sequence' : state.player.mode === PLAY_MODE.random ? 'icon-random' : 'icon-loop')
 export const modeTxt = (state) => (state.player.mode === PLAY_MODE.sequence ? '顺序播放' : state.player.mode === PLAY_MODE.random ? '随机播放' : '单曲循环')
 

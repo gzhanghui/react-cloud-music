@@ -1,20 +1,23 @@
-import React from "react";
+import React,{useEffect} from "react";
 import { useSelector, useDispatch } from "react-redux";
 import classNames from "classnames";
 import { message } from "antd";
 import { PauseCircleFilled, PlayCircleFilled } from "@ant-design/icons";
 import PlayingIcon from "components/player/play-icon";
+import {cachePlaylist} from 'common/js/cache'
 import {
   playList,
   currentIndex,
   changeIndex,
   playing,
+  audioState,
   changePlaying,
 } from "./player-slice";
 function PlayList() {
   const list = useSelector(playList);
   const index = useSelector(currentIndex);
   const play = useSelector(playing);
+  const state =useSelector(audioState)
   const dispatch = useDispatch();
   // const playingClass = (i) => {
   //   return classNames("iconfont", {
@@ -22,6 +25,9 @@ function PlayList() {
   //     "icon-videofill": index !== i || (i === index && !play),
   //   });
   // };
+  useEffect(()=>{
+    cachePlaylist.set(list)
+  },[list])
   return (
     <div className="song-list">
       <ul>
@@ -44,13 +50,13 @@ function PlayList() {
                   className="control-icon"
                   onClick={() => {  dispatch(changePlaying(!play)); }}
                 >
-                { (i === index && play) ? (<PlayCircleFilled/>):(<PauseCircleFilled/>)}
+                { (i === index && state.playing) ? (<PauseCircleFilled/>):(<PlayCircleFilled/>)}
                 </button>
               </div>
               <div className="text">
                 <h3 className="top">
                   <span className="name ellipsis">{song.name}</span>
-                  {i === index && play && <PlayingIcon />}
+                  {i === index && state.playing && <PlayingIcon />}
                 </h3>
                 <div className="bottom">
                   <span>{song.artistsName}</span>

@@ -26,10 +26,10 @@ export const likeSlice = createSlice({
     reducers: {
         changeSongList: (state, { payload }) => {
             const record = payload.record
-            let islike = record.islike
-            islike = islike ? false : true
+            let isLike = record.isLike
+            isLike = isLike ? false : true
             const likeList = current(state).likeList.map(song => {
-                return song.id === record.id ? { ...song, islike } : { ...song }
+                return song.id === record.id ? { ...song, isLike } : { ...song }
             })
             state.likeList = likeList
         },

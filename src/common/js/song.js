@@ -11,8 +11,7 @@ export function formatName(data, field = 'name') {
 
 
 export function createSong({ name, id, artists, album, duration, image, url, metadata }) {
-    const islike = RegExp(/p2.music/).test(image)
-    console.log(islike, image)
+    const isLike = RegExp(/p2.music/).test(image)
     return {
         name,
         id,
@@ -23,7 +22,7 @@ export function createSong({ name, id, artists, album, duration, image, url, met
         duration: utils.durationToTime(duration),
         image,
         url,
-        islike,
+        isLike,
         metadata
     }
 }

@@ -60,7 +60,6 @@ export class DrawCover {
     ctx.restore();
     cancelAnimationFrame(this.animation)
     this.animation = window.requestAnimationFrame(this.draw.bind(this));
-    console.log(this.animation)
   }
   setImage(src) {
     this.stop()
