@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { isEmpty, uniq } from 'lodash';
-import storage from 'store'
+import {cacheSearch} from 'common/js/cache'
 import { getHotDetail, getSuggest } from 'apis/search'
 
 const initialState = {
@@ -9,7 +9,7 @@ const initialState = {
     panelVisible: false,
     searchSuggest: [],
     hotSearch: [],
-    historySearch:  storage.get('history-search') || []
+    historySearch:  cacheSearch.get() || []
 };
 export const getHotDetailThunk = createAsyncThunk(
     'search/getHotDetail',
@@ -31,7 +31,7 @@ export const searchSlice = createSlice({
     reducers: {
         setHistorySearch: (state, action) => {
             const data = uniq([action.payload, ...state.historySearch])
-            storage.set('history-search', data)
+            cacheSearch.set(data)
             state.historySearch = data
         },
         clearSearchSuggest: (state) => {
@@ -46,7 +46,7 @@ export const searchSlice = createSlice({
             } else {
                 state.historySearch.splice(action.payload, 1);
             }
-            storage.set('history-search', state.historySearch)
+            cacheSearch.set(state.historySearch)
         },
         setSearchWord:(state, action) => {
             state.searchWord = action.payload

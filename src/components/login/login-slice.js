@@ -1,9 +1,8 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { get } from "lodash";
 import { login as LoginApi, loginState, logout } from 'apis/login'
-import utils from 'common/js/util'
-const ACCESS_TOKEN = '__music_assess_token__'
-const USER_INFO = '__music_userinfo__'
+import {cacheUser,cacheAccessToken} from 'common/js/cache'
+
 const initialState = {
     password: `hui822520`,
     name: `13029678009`,
@@ -17,8 +16,8 @@ export const loginThunk = createAsyncThunk(
     'login/login',
     async ({ name, password, type }) => {
         const res = await LoginApi(name, password, type);
-        utils.storage.set(ACCESS_TOKEN, get(res, 'data.token'))
-        utils.storage.set(USER_INFO, res.data)
+        cacheAccessToken.set(get(res, 'data.token'))
+        cacheUser.set(res.data)
         return res;
     }
 );

@@ -1,12 +1,14 @@
 import { createSlice, createAsyncThunk, current } from '@reduxjs/toolkit';
 import { uniqBy } from 'lodash'
 import { getLyric } from 'apis/song'
-
+import {cachePlaylist} from 'common/js/cache';
 export const PLAY_MODE = {
     sequence: 0,
     loop: 1,
     random: 2
 }
+export const HISTORY_PLAYLIST = "HISTORY_PLAYLIST"
+
 const initialState = {
     audioState: {
         buffered: [],
@@ -21,7 +23,7 @@ const initialState = {
     songError: false,
     currentIndex: -1,
     currentLyric: '',
-    playList: [],
+    playList:cachePlaylist.get(),
     panelVisible: false,
     currentLineNum: 0,
     mode: PLAY_MODE.sequence

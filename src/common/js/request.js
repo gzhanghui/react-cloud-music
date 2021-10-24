@@ -1,8 +1,7 @@
 import axios from 'axios'
-import utils from 'common/js/util'
+import {cacheAccessToken} from 'common/js/cache'
 import { notification } from 'antd'
 
-const ACCESS_TOKEN = '__music_assess_token__'
 // 创建 axios 实例
 const request = axios.create({
     timeout: 6000 // 请求超时时间
@@ -12,8 +11,8 @@ const request = axios.create({
 const errorHandler = (error) => {
     if (error.response) {
         const data = error.response.data
-        // 从 localstorage 获取 token
-        const token = utils.storage.get(ACCESS_TOKEN)
+        // 从 localStorage 获取 token
+        const token =cacheAccessToken.get()
         if (error.response.status === 403) {
             notification.error({
                 message: 'Forbidden',
@@ -35,7 +34,7 @@ const errorHandler = (error) => {
 
 // request interceptor
 request.interceptors.request.use(config => {
-    const token = utils.storage.get(ACCESS_TOKEN)
+    const token = cacheAccessToken.get()
     // 如果 token 存在
     if (token) {
         config.headers['Authorization'] = token
