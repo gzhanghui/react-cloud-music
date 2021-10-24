@@ -91,18 +91,21 @@ function Player() {
   }, [play]);
   /* 音乐切换时 */
   useEffect(() => {
+    console.log("次数", 111, song);
     if (!song.url) return;
+    ref.current.src = song.url;
+    controls.play();
     if (lyricRef.current) {
       lyricRef.current.stop();
       lyricRef.current = null;
+      console.log("次数", 333);
       dispatch(changeCurrentLine(0));
     }
-    if (ref.current.src !== song.url) {
-      ref.current.src = song.url;
-      controls.play();
-    }
+  
+
     /* 绘制旋转的CD */
     if (coverRef.current) {
+      coverRef.current && coverRef.current.stop();
       coverRef.current.drawCover(song.image);
     } else {
       coverRef.current = new drawCD($canvas.current, song.image);

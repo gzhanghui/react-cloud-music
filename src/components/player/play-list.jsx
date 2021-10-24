@@ -2,24 +2,26 @@ import React from "react";
 import { useSelector, useDispatch } from "react-redux";
 import classNames from "classnames";
 import { message } from "antd";
-import PlayingIcon from 'components/player/play-icon'
+import { PauseCircleFilled, PlayCircleFilled } from "@ant-design/icons";
+import PlayingIcon from "components/player/play-icon";
 import {
   playList,
   currentIndex,
   changeIndex,
-  audioState,
+  playing,
+  changePlaying,
 } from "./player-slice";
 function PlayList() {
   const list = useSelector(playList);
-  const state = useSelector(audioState);
   const index = useSelector(currentIndex);
+  const play = useSelector(playing);
   const dispatch = useDispatch();
-  const playingClass = (i) => {
-    return classNames("iconfont", {
-      "icon-poweroff-circle-fill": i === index && state.playing,
-      "icon-videofill": index !== i || (i === index && !state.playing),
-    });
-  };
+  // const playingClass = (i) => {
+  //   return classNames("iconfont", {
+  //     "icon-poweroff-circle-fill": i === index && play,
+  //     "icon-videofill": index !== i || (i === index && !play),
+  //   });
+  // };
   return (
     <div className="song-list">
       <ul>
@@ -27,7 +29,7 @@ function PlayList() {
           return (
             <li
               className={classNames("item", { disabled: !song.url })}
-              key={i}
+              key={song.id}
               onClick={() => {
                 if (!song.url) {
                   message.error("error");
@@ -38,14 +40,17 @@ function PlayList() {
             >
               <div className="icon">
                 <img src={song.image} width="42" />
-                <span className="control-icon">
-                  <i className={playingClass(i)}></i>
-                </span>
+                <button
+                  className="control-icon"
+                  onClick={() => {  dispatch(changePlaying(!play)); }}
+                >
+                { (i === index && play) ? (<PlayCircleFilled/>):(<PauseCircleFilled/>)}
+                </button>
               </div>
               <div className="text">
                 <h3 className="top">
                   <span className="name ellipsis">{song.name}</span>
-                  {i === index && state.playing && <PlayingIcon/>}
+                  {i === index && play && <PlayingIcon />}
                 </h3>
                 <div className="bottom">
                   <span>{song.artistsName}</span>

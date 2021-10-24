@@ -1,5 +1,5 @@
-import { createSlice, createAsyncThunk,current } from '@reduxjs/toolkit';
-import {uniqBy} from 'lodash'
+import { createSlice, createAsyncThunk, current } from '@reduxjs/toolkit';
+import { uniqBy } from 'lodash'
 import { getLyric } from 'apis/song'
 
 export const PLAY_MODE = {
@@ -40,6 +40,7 @@ export const playerSlice = createSlice({
         insertSong: (state, action) => {
             const list = current(state).playList
             state.playList = uniqBy([action.payload, ...list])
+            console.log(state.playList)
         },
         replacePlayList: (state, action) => {
             state.playList = action.payload
@@ -150,7 +151,6 @@ export const skipForward = () => () => {
 
 }
 function loop(dispatch) {
-    dispatch(updateTime(0))
     dispatch(changePlaying(true))
 }
 export default playerSlice.reducer;

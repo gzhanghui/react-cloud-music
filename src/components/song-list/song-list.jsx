@@ -13,14 +13,15 @@ import {
   changeIndex,
   audioState,
   changePlaying,
-  currentIndex,
+  currentSong,
   insertSong,
 } from "components/player/player-slice";
 
 function SongList(props) {
-  const { songList,handelSongLike } = props;
+  const { songList, handelSongLike } = props;
   const state = useSelector(audioState);
-  const playIndex = useSelector(currentIndex);
+  const song = useSelector(currentSong)
+  const songIndex =  songList.findIndex(item=>item.id===song.id)
   const dispatch = useDispatch();
   return (
     <Table
@@ -31,10 +32,13 @@ function SongList(props) {
         {
           dataIndex: "islike",
           title: " ",
-          render: (text, record,index) => (
-            <button className="like-button" onClick={()=>{
-              handelSongLike(record,index)
-            }}>
+          render: (text, record, index) => (
+            <button
+              className="like-button"
+              onClick={() => {
+                handelSongLike(record, index);
+              }}
+            >
               {record.islike ? (
                 <HeartFilled className="like-color" />
               ) : (
@@ -50,7 +54,7 @@ function SongList(props) {
             <div className="table-player-control">
               <span className="name">{text}</span>
               <div className="play-state">
-                {state.playing && playIndex === index ? (
+                {state.playing && songIndex === index ? (
                   <React.Fragment>
                     <PlayingIcon className="state-icon" />
                     <PauseCircleFilled
@@ -65,7 +69,6 @@ function SongList(props) {
                     className="state-btn"
                     onClick={() => {
                       dispatch(changePlaying(false));
-                      dispatch(changeIndex(index));
                     }}
                   />
                 )}
@@ -79,16 +82,12 @@ function SongList(props) {
       ]}
       dataSource={songList}
       size="small"
-      onRow={(record, index) => {
+      onRow={(record) => {
         return {
-          onClick: () => {
-          },
+          onClick: () => {},
           onDoubleClick: () => {
-            dispatch(insertSong(songList[index]));
-            console.log(index);
-            setTimeout(() => {
-              dispatch(changeIndex(index));
-            }, 400);
+            dispatch(insertSong(record));
+            dispatch(changeIndex(0));
           },
         };
       }}
@@ -98,10 +97,10 @@ function SongList(props) {
 
 SongList.propTypes = {
   songList: PropTypes.oneOfType([PropTypes.array]),
-  handelSongLike:PropTypes.oneOfType([PropTypes.func])
+  handelSongLike: PropTypes.oneOfType([PropTypes.func]),
 };
 SongList.defaultProps = {
   songList: [],
-  handelSongLike:()=>{}
+  handelSongLike: () => {},
 };
 export default SongList;
