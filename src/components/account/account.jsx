@@ -3,7 +3,7 @@ import {Avatar, Popover, Button} from "antd";
 import {get, isEmpty} from "lodash";
 import {getStatus, getUserInfo, setLoginBox} from "components/login/login-slice";
 import {useDispatch, useSelector} from "react-redux";
-import storage from "store";
+import utils from 'common/js/util'
 import {getDetailThunk, getUserLevelThunk, userDetail, userLevel} from './account-slice'
 import {logoutThunk} from '@/components/login/login-slice'
 const USER_INFO = '__music_userinfo__'
@@ -13,7 +13,7 @@ export default function Account() {
     const level = useSelector(userLevel)
     const status = useSelector(getStatus);
     let userInfo = useSelector(getUserInfo);
-    userInfo = isEmpty(userInfo) ? storage.get(USER_INFO) : userInfo
+    userInfo = isEmpty(userInfo) ? utils.storage.get(USER_INFO) : userInfo
     let avatarUrl = `https://gw.alipayobjects.com/zos/antfincdn/XAosXuNZyF/BiazfanxmamNRoxxVxka.png`
     avatarUrl = get(userInfo, 'profile.avatarUrl') ? get(userInfo, 'profile.avatarUrl') : avatarUrl
     useEffect(() => {

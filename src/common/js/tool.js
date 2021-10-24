@@ -1,5 +1,3 @@
-import { padStart } from 'lodash'
-
 // const _pad = (num, n = 2) => {
 //   let len = num.toString().length
 //   while (len < n) {
@@ -9,12 +7,6 @@ import { padStart } from 'lodash'
 //   return num
 // }
 
-export const formatTime = (time) => {
-  time = time | 0
-  const minute = padStart(`${parseInt(time / 60 )}`,2,'0')
-  const second = padStart(`${parseInt((time) % 60)}`,2,'0' )
-  return `${minute}:${second}`
-}
 
 export function imageLoad(url) {
   return new Promise((resolve, reject) => {
@@ -28,14 +20,14 @@ export function imageLoad(url) {
     }
   });
 }
-export class drawCD {
+export class DrawCover {
   constructor(canvas, image, radius, speed) {
     this.ctx = canvas.getContext('2d');
     this.canvas = canvas
     this.src = image
     this.radius = radius || 131
     this.angle = 0.1
-    this.speed = speed || 10000
+    this.speed = speed || 1000 * 10
     this.init()
   }
   init() {
@@ -49,7 +41,7 @@ export class drawCD {
       this.canvas.style.height = `${this.radius * 2}px`
       this.ctx.translate(this.radius * 2, this.radius * 2);
       this.image = image
-      this.start()
+      // this.start()
     })
   }
   draw() {
@@ -62,11 +54,15 @@ export class drawCD {
     ctx.clip();
     this.angle = this.angle + (360 / this.speed) / (1000 / 60);
     ctx.rotate(this.angle);
+    if (!this.image) return
     ctx.drawImage(this.image, -radius * 2, -radius * 2, radius * 4, radius * 4);
+
     ctx.restore();
+    cancelAnimationFrame(this.animation)
     this.animation = window.requestAnimationFrame(this.draw.bind(this));
+    console.log(this.animation)
   }
-  drawCover(src) {
+  setImage(src) {
     this.stop()
     this.src = src
     imageLoad(this.src).then(image => {
@@ -74,7 +70,6 @@ export class drawCD {
       this.angle = 0
       this.draw.bind(this)()
     })
-
   }
   stop() {
     if (this.animation) {

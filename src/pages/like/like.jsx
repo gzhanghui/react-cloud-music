@@ -66,7 +66,7 @@ export default function Like() {
                 {get(playData, "[0].creator.nickname")}
               </Button>
               <span>
-                {utils.formatTime(get(playData, "[0].creator.createTime"))} 创建
+                {utils.durationToTime(get(playData, "[0].creator.createTime"))} 创建
               </span>
             </div>
             <Button

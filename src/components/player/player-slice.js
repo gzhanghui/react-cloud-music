@@ -60,7 +60,7 @@ export const playerSlice = createSlice({
         changeCurrentLine: (state, action) => {
             state.currentLineNum = action.payload
         },
-        changeCurrentLyric: (state, action) => {
+        setSongLyric: (state, action) => {
             state.currentLyric = action.payload;
         },
         changeMode: (state) => {
@@ -90,7 +90,7 @@ export const {
     changePlaying,
     replacePlayList,
     changeCurrentLine,
-    changeCurrentLyric,
+    setSongLyric,
     changeMode,
     changeState,
     insertSong
@@ -114,7 +114,7 @@ export const addSongLyric = (id) => (dispatch, getState) => {
     if (!song.lyric) {
         dispatch(lyricThunk(id))
     } else {
-        dispatch(changeCurrentLyric(song.lyric))
+        dispatch(setSongLyric(song.lyric))
     }
 };
 export const toggleNext = () => async (dispatch, getState) => {

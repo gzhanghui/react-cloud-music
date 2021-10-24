@@ -14,7 +14,8 @@ import {
 // import useAudio from "./useAudio";
 import { useAudio } from "react-use";
 import { removeClass, addClass } from "common/js/dom";
-import { formatTime, drawCD } from "common/js/tool";
+import { DrawCover } from "@/common/js/tool";
+import utils from "common/js/util";
 import Lyric from "common/js/lyric-parser";
 import Scroll from "@/components/scroll";
 import musicCover from "@/common/images/default-music.svg";
@@ -61,7 +62,6 @@ function Player() {
   // ref
   const coverRef = useRef(null);
   const lyricRef = useRef(null);
-  const updateRef = useRef(false);
 
   const dispatch = useDispatch();
 
@@ -91,26 +91,25 @@ function Player() {
   }, [play]);
   /* 音乐切换时 */
   useEffect(() => {
-    console.log("次数", 111, song);
     if (!song.url) return;
     ref.current.src = song.url;
     controls.play();
+    dispatch(addSongLyric(song.id));
+    /* 歌词 */
     if (lyricRef.current) {
       lyricRef.current.stop();
       lyricRef.current = null;
-      console.log("次数", 333);
       dispatch(changeCurrentLine(0));
     }
-  
 
     /* 绘制旋转的CD */
-    if (coverRef.current) {
-      coverRef.current && coverRef.current.stop();
-      coverRef.current.drawCover(song.image);
+    if (!coverRef.current) {
+      coverRef.current = new DrawCover($canvas.current, song.image);
+      coverRef.current.start()
     } else {
-      coverRef.current = new drawCD($canvas.current, song.image);
+      coverRef.current.setImage(song.image);
+      coverRef.current.start()
     }
-    dispatch(addSongLyric(song.id));
   }, [song]);
   /** 歌词 */
   useEffect(() => {
@@ -277,14 +276,17 @@ function Player() {
               </button>
             </div>
             <div className="progress-wrapper">
-              <span className="time-l time">{formatTime(playState.time)}</span>
+              <span className="time-l time">{utils.durationToTime(playState.time*1000)}</span>
               <div className="progress" ref={$progress}>
                 <Slider
                   disabled={!song.url}
                   value={playState.time}
                   max={playState.duration}
+                  tipFormatter={(value) => {
+                    const val = Math.ceil((value / playState.duration) * 100);
+                    return val + "%";
+                  }}
                   onAfterChange={() => {
-                    updateRef.current = true;
                     controls.play();
                   }}
                   onChange={(value) => {
@@ -319,7 +321,7 @@ function Player() {
                 </Slider>
               </div>
               <span className="time-r time">
-                {formatTime(playState.duration)}
+                {utils.durationToTime(playState.duration*1000)}
               </span>
             </div>
           </div>
@@ -346,7 +348,7 @@ function Player() {
                 step={0.01}
                 max={1}
                 value={playState.volume}
-                tipFormatter={(val) => val + "%"}
+                tipFormatter={(val) => Math.ceil(val * 100) + "%"}
                 onChange={(val) => {
                   controls.volume(val);
                 }}

@@ -2,6 +2,18 @@ import { padStart } from 'lodash'
 import * as dayjs from 'dayjs'
 import duration from 'dayjs/plugin/duration'
 dayjs.extend(duration)
+
+function stringify(val) {
+    return JSON.stringify(val)
+}
+function parse(val) {
+    try {
+        return JSON.parse(val)
+    } catch (e) {
+        return val || undefined
+    }
+}
+
 const utils = {
     /**
      * Parse second to time string
@@ -24,17 +36,28 @@ const utils = {
         const { $d } = dayjs.duration(duration)
         return `${padStart($d.minutes, 2, '0')}:${padStart($d.seconds, 2, '0')}`
     },
-    formatTime(time, format = "YYYY-MM-DD") {
-        return dayjs(time).format(format)
-    },
+
     isMobile: /mobile/i.test(window.navigator.userAgent),
 
     storage: {
         set: (key, value) => {
-            localStorage.setItem(key, value);
+            if (value === undefined) return
+            localStorage.setItem(key, stringify(value));
         },
 
-        get: (key) => localStorage.getItem(key),
+        get: (key) => {
+            const val = parse(localStorage.getItem(key))
+            return val ? val : undefined
+        },
+        remove(key) {
+            localStorage.removeItem(key)
+        },
+
+        clear() {
+            localStorage.clear()
+        },
+
+
     },
     elementsContains: (elements, target) => {
         return elements.some((ele) => ele && ele.contains(target));

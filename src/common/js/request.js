@@ -1,6 +1,6 @@
 import axios from 'axios'
-import storage from 'store'
-import {notification} from 'antd'
+import utils from 'common/js/util'
+import { notification } from 'antd'
 
 const ACCESS_TOKEN = '__music_assess_token__'
 // 创建 axios 实例
@@ -13,7 +13,7 @@ const errorHandler = (error) => {
     if (error.response) {
         const data = error.response.data
         // 从 localstorage 获取 token
-        const token = storage.get(ACCESS_TOKEN)
+        const token = utils.storage.get(ACCESS_TOKEN)
         if (error.response.status === 403) {
             notification.error({
                 message: 'Forbidden',
@@ -35,7 +35,7 @@ const errorHandler = (error) => {
 
 // request interceptor
 request.interceptors.request.use(config => {
-    const token = storage.get(ACCESS_TOKEN)
+    const token = utils.storage.get(ACCESS_TOKEN)
     // 如果 token 存在
     if (token) {
         config.headers['Authorization'] = token

@@ -80,7 +80,7 @@ export default function SearchReslut() {
                   className="album-cover"
                 />
                 <div>{item.name}</div>
-                <time>{utils.formatTime(item.publishTime)}</time>
+                <time>{utils.durationToTime(item.publishTime)}</time>
               </li>
             ))}
           </ul>
