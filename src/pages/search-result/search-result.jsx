@@ -18,7 +18,7 @@ import {
   getArtistMvThunk,
 } from "./search-result-slice";
 // eslint-disable-next-line no-unused-vars
-import { replacePlayList } from "@/components/player/player-slice";
+import { insertSong } from "@/components/player/player-slice";
 export default function SearchReslut() {
   const dispatch = useDispatch();
   const artist = useSelector(artistDetail);

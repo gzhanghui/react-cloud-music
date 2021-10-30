@@ -1,11 +1,11 @@
 import { createSlice, createAsyncThunk, current } from '@reduxjs/toolkit';
-import { uniqBy } from 'lodash'
+import { isArray, uniqBy } from 'lodash'
 import { getLyric } from 'apis/song'
-import { cachePlaylist } from 'common/js/cache';
+import { cachePlaylist, cachePlayMode } from 'common/js/cache';
 export const PLAY_MODE = {
-    sequence: 0,
-    loop: 1,
-    random: 2
+    sequence: { text: '顺序播放', icon: 'icon-sequence', code: 0 },
+    loop: { text: '随机播放', icon: 'icon-random', code: 1 },
+    random: { text: '单曲循环', icon: 'icon-loop', code: 2 }
 }
 
 const initialState = {
@@ -22,10 +22,10 @@ const initialState = {
     songError: false,
     currentIndex: -1,
     currentLyric: '',
-    playList: cachePlaylist.get()||[],
+    playList: cachePlaylist.get() || [],
     panelVisible: false,
     currentLineNum: 0,
-    mode: PLAY_MODE.sequence
+    currentMode: cachePlayMode.get() || PLAY_MODE.sequence.code
 };
 export const lyricThunk = createAsyncThunk(
     'player/lyric',
@@ -40,10 +40,14 @@ export const playerSlice = createSlice({
     reducers: {
         insertSong: (state, action) => {
             const list = current(state).playList
-            state.playList = uniqBy([action.payload, ...list],'id')
-        },
-        replacePlayList: (state, action) => {
-            state.playList = action.payload
+            // 批量插入
+            if (isArray(action.payload)) {
+                state.playList = uniqBy(action.payload.concat(list), 'id')
+            } else {
+                // 单曲插入  
+                state.playList = uniqBy([action.payload, ...list], 'id')
+            }
+            cachePlaylist.set(state.playList)
         },
         toggleFullScreen: (state) => {
             state.fullScreen = !state.fullScreen;
@@ -64,7 +68,8 @@ export const playerSlice = createSlice({
             state.currentLyric = action.payload;
         },
         changeMode: (state) => {
-            state.mode = (state.mode + 1) % 3;
+            state.currentMode = (state.currentMode + 1) % 3;
+            cachePlayMode.set(state.currentMode)
         },
         changeState: (state, action) => {
             state.audioState = action.payload;
@@ -88,7 +93,6 @@ export const {
     changeIndex,
     togglePanel,
     changePlaying,
-    replacePlayList,
     changeCurrentLine,
     setSongLyric,
     changeMode,
@@ -104,10 +108,8 @@ export const currentIndex = (state) => state.player.currentIndex;
 export const playing = (state) => state.player.playing;
 export const currentLyric = (state) => state.player.currentLyric;
 export const currentLineNum = (state) => state.player.currentLineNum;
-export const mode = (state) => state.player.mode;
-export const currentSong = (state) => (state.player.playList[state.player.currentIndex]||{} )
-export const modeIcon = (state) => (state.player.mode === PLAY_MODE.sequence ? 'icon-sequence' : state.player.mode === PLAY_MODE.random ? 'icon-random' : 'icon-loop')
-export const modeTxt = (state) => (state.player.mode === PLAY_MODE.sequence ? '顺序播放' : state.player.mode === PLAY_MODE.random ? '随机播放' : '单曲循环')
+export const currentMode = (state) => state.player.currentMode;
+export const currentSong = (state) => (state.player.playList[state.player.currentIndex] || {})
 
 export const addSongLyric = (id) => (dispatch, getState) => {
     const song = currentSong(getState());

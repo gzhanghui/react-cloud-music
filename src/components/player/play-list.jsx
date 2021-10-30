@@ -1,10 +1,9 @@
-import React,{useEffect} from "react";
+import React from "react";
 import { useSelector, useDispatch } from "react-redux";
 import classNames from "classnames";
 import { message } from "antd";
 import { PauseCircleFilled, PlayCircleFilled } from "@ant-design/icons";
 import PlayingIcon from "components/player/play-icon";
-import {cachePlaylist} from 'common/js/cache'
 import {
   playList,
   currentIndex,
@@ -25,9 +24,6 @@ function PlayList() {
   //     "icon-videofill": index !== i || (i === index && !play),
   //   });
   // };
-  useEffect(()=>{
-    cachePlaylist.set(list)
-  },[list])
   return (
     <div className="song-list">
       <ul>

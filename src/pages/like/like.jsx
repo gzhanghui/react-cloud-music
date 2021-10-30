@@ -5,7 +5,7 @@ import { Card, Row, Col, Image, Button, Avatar, Modal } from "antd";
 import { PlayCircleOutlined } from "@ant-design/icons";
 import utils from "common/js/util";
 import SongList from "components/song-list/song-list";
-import { replacePlayList, changeIndex } from "components/player/player-slice";
+import { insertSong, changeIndex } from "components/player/player-slice";
 
 import {
   likeList,
@@ -40,7 +40,7 @@ export default function Like() {
         close();
       },
       onOk: (close) => {
-        dispatch(replacePlayList(likeData));
+        dispatch(insertSong(likeData));
         dispatch(changeIndex(0));
         close();
       },

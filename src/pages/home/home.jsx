@@ -11,7 +11,7 @@ import {
   getNewSongThunk,
   changeIndex,
 } from "./home-slice";
-// import { replacePlayList } from "components/player/player-slice";
+// import { insertSong } from "components/player/player-slice";
 export default function Home() {
   const bannerData = useSelector(bannerList);
   const newSongList = useSelector(newSongs);

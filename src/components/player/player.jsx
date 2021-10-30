@@ -27,8 +27,7 @@ import {
   currentSong,
   currentLyric,
   currentLineNum,
-  modeIcon,
-  modeTxt,
+  currentMode,
   playList,
   panelVisible,
   changeCurrentLine,
@@ -40,18 +39,22 @@ import {
   togglePrev,
   playing,
 } from "./player-slice";
-
+const MODE = [
+  { text: "顺序播放", icon: "icon-sequence", code: 0 },
+  { text: "随机播放", icon: "icon-random", code: 1 },
+  { text: "单曲循环", icon: "icon-loop", code: 2 },
+];
 function Player() {
   const list = useSelector(playList);
   const visible = useSelector(panelVisible);
   const screen = useSelector(fullScreen);
   const song = useSelector(currentSong);
   const line = useSelector(currentLineNum);
-  const playModeIcon = useSelector(modeIcon);
-  const playModeTxt = useSelector(modeTxt);
   const lyric = useSelector(currentLyric);
   const playState = useSelector(audioState);
   const play = useSelector(playing);
+  const mode = useSelector(currentMode);
+  const { text, icon } = MODE.find((item) => item.code === mode);
   // dom
   const $lyric = useRef(null);
   const $canvas = useRef(null);
@@ -105,10 +108,10 @@ function Player() {
     /* 绘制旋转的CD */
     if (!coverRef.current) {
       coverRef.current = new DrawCover($canvas.current, song.image);
-      coverRef.current.start()
+      coverRef.current.start();
     } else {
       coverRef.current.setImage(song.image);
-      coverRef.current.start()
+      coverRef.current.start();
     }
   }, [song]);
   /** 歌词 */
@@ -276,7 +279,9 @@ function Player() {
               </button>
             </div>
             <div className="progress-wrapper">
-              <span className="time-l time">{utils.durationToTime(playState.time*1000)}</span>
+              <span className="time-l time">
+                {utils.durationToTime(playState.time * 1000)}
+              </span>
               <div className="progress" ref={$progress}>
                 <Slider
                   disabled={!song.url}
@@ -321,7 +326,7 @@ function Player() {
                 </Slider>
               </div>
               <span className="time-r time">
-                {utils.durationToTime(playState.duration*1000)}
+                {utils.durationToTime(playState.duration * 1000)}
               </span>
             </div>
           </div>
@@ -335,8 +340,8 @@ function Player() {
                 dispatch(changeMode());
               }}
             >
-              <Tooltip title={playModeTxt}>
-                <i className={classNames("iconfont", playModeIcon)}></i>
+              <Tooltip title={text}>
+                <i className={classNames("iconfont", icon)}></i>
               </Tooltip>
             </button>
             <button className="icon">

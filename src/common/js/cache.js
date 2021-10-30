@@ -5,6 +5,7 @@ const USER_INFO = '__music_user_info__'
 const ACCESS_TOKEN = '__music_assess_token__'
 const HISTORY_SEARCH = 'history-search'
 const HISTORY_PLAYLIST = 'history_playlist'
+const PLAY_MODE = 'play-mode'
 
 const { storage } = utils
 export const cacheUser = {
@@ -42,5 +43,14 @@ export const cachePlaylist = {
     },
     get: function () {
         return storage.get(HISTORY_PLAYLIST)
+    }
+}
+
+export const cachePlayMode = {
+    set: function (data) {
+        storage.set(PLAY_MODE, data)
+    },
+    get: function () {
+        return storage.get(PLAY_MODE)
     }
 }
