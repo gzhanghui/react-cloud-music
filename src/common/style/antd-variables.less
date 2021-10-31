@@ -1,10 +1,7 @@
 @layout-header-padding: 0 20px;
 @layout-footer-padding: 16px 50px;
-// @background-color-light: rgba(0, 0, 0,1);
 @text: hsla(0,0%,100%,.6);
 .ant-card{
-    background-color: transparent;
-    color:@text;
     .ant-card-head{
         border: 0;
         color: @white;
@@ -12,80 +9,27 @@
     }
     &.ant-card-bordered{
         border: 0;
-      
     }
     .ant-card-body{
         padding: 0 24px 24px 24px;
     }
 }
 
-
-
 .ant-layout{
     position: relative;
     z-index: 2;
-    background-color: transparent;
 }
-.ant-layout-header{
-    background-color: transparent;
-}
-.ant-layout-footer{
-    background-color: @component-background //rgba(5,3,13.8);
-}
+
 .ant-layout-sider{
     background-color: rgba(0, 0, 0,0.5);
 }
 .ant-table-tbody > tr > td{
     border: 0;
 }
-.ant-table{
-    background-color: transparent;
-    color:@text;
-}
-.ant-input-affix-wrapper, .ant-input{
-    background-color: transparent;
-}
 
-.ant-select-item-option-active:not(.ant-select-item-option-disabled){
-    background-color: @color-0-3;
-    color: @primary-color;
-}
-.ant-select-item-option-selected:not(.ant-select-item-option-disabled){
-    background-color: @color-0-3;
-    color: @primary-color;
-}
-.ant-input-affix-wrapper{
-    // border-color: rgba(255, 255, 255,0.25);
-    border-radius: 15px;
-    padding: 2px 11px;
-    input{
-        height: 26px;
-    }
-}
-
-.ant-table-title + .ant-table-container table > thead > tr:first-child th:first-child,
-.ant-table.ant-table-small .ant-table-tbody > tr > td:first-child{
-    // padding-left: 0;
-}
-
-.ant-table-content .ant-table-thead > tr > th{
-    background-color:  rgba(0, 0, 0,0.3);
-    color:  @text-color-title;
-    border: 0;
-    &:first-child{
-        // padding-left: 0;
-    }
-}
- 
-.ant-table-tbody > tr.ant-table-row{
-    &:hover > td{
-        background-color: @color-0-3;
-    }
-}
 .ant-slider{
     &-rail{
         height: 2px;
-        background-color: #55585F; 
     }
     &-track{
         height: 2px;
@@ -96,32 +40,13 @@
         height: 2px;
     }
     &-handle{
-        width: 10px;
-        height: 10px;
-        border-color:@white;
-        top: 0;
-        margin-top: 0;
-        background-color: #05030d;
         z-index: 2;
-        &:focus{
-            border-color:@white;
-        }
-    }
-    &:hover {
-        .ant-slider-rail{
-            background-color:#55585F; //D8D8D8
-        } 
-        .ant-slider-track{
-            background-color:@white; // #00c000
-        }
-        .ant-slider-handle{
-            border-color:@white !important; // #e1e1e1
-        }
+        margin-top: -4px;
     }
     .loaded{
         position: absolute;
         height: 2px;
-        background-color: @color-6; //55585F
+        background-color: @progress-loaded; //55585F
         border-radius: 1px;
         transition: background-color 0.3s;
         top: 4px;
@@ -130,7 +55,3 @@
     }
 }
 
-
-.ant-drawer-content{
-    background-color: #191a20;
-}

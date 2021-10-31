@@ -26,7 +26,7 @@ function SongList(props) {
   return (
     <Table
       rowKey="id"
-      showHeader={true}
+      showHeader={false}
       pagination={false}
       columns={[
         {

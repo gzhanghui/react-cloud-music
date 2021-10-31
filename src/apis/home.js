@@ -22,6 +22,19 @@ export const getBanner = function (type = 2) {
 }
 
 
+export const getPrivateList = function (limit = 3, offset = 0) {
+    const url = '/api/personalized/privatecontent/list';
+    return request.get(url,{params:{limit, offset}}).then((res) => {
+        return Promise.resolve(res.data)
+    })
+}
+export const getRecommendMv = function (limit = 3, offset = 0) {
+    const url = '/api/personalized/mv';
+    return request.get(url,{params:{limit, offset}}).then((res) => {
+        return Promise.resolve(res.data)
+    })
+}
+
 export const getHotwallList = function () {
     const url = '/api/comment/hotwall/list';
     return request.get(url).then((res) => {

@@ -1,0 +1,42 @@
+.mv-cover-content {
+    position: relative;
+
+    .mv-cover-mask {
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        left: 0;
+        top: 0;
+        background-color: rgba(0, 0, 0, 0);
+        z-index: 2;
+        transition: all .1s @ease-base-in;
+    }
+
+    &:hover {
+        .mv-cover-mask {
+            background-color: rgba(0, 0, 0, 0.25);
+        }
+
+        .mv-cover-button {
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            color: @white;
+        }
+    }
+
+    .mv-cover-button {
+        background-color: transparent;
+        border: 0;
+        outline: transparent;
+        position: absolute;
+        top: 0;
+        left: 0;
+        padding: 0;
+        margin: 0;
+        transition: all .1s @ease-base-in;
+        font-size: 20px;
+        color: rgba(255, 255, 255, .75);
+
+    }
+}

@@ -75,7 +75,6 @@ body{
     overflow: hidden;
     .list{
         display: flex;
-        user-select: none;
         transition: all .4s;
          .item{
            margin:10px 10px 0 10px;
@@ -150,5 +149,11 @@ body{
           -webkit-line-clamp: 2;
           overflow: hidden;
         }
+    }
+  }
+
+  .mv-card{
+    .ant-card-body{
+      padding: 0;
     }
   }
