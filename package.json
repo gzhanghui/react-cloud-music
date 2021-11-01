@@ -47,6 +47,10 @@
   "devDependencies": {
     "@craco/craco": "^6.1.2",
     "craco-less": "^1.17.1",
-    "eslint-plugin-react": "^7.24.0"
+    "eslint-plugin-react": "^7.24.0",
+    "koa": "^2.13.4",
+    "koa-bodyparser": "^4.3.0",
+    "koa-onerror": "^4.1.0",
+    "koa-router": "^10.1.1"
   }
 }
