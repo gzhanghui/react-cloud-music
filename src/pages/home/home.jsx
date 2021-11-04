@@ -44,7 +44,7 @@ export default function Home() {
           {bannerData.map((item) => {
             return (
               <Carousel.Item key={item.imageUrl}>
-                <img src={item.imageUrl} alt={item.typeTitle} width="100%" />
+                <img src={item.imageUrl} alt={item.typeTitle} height="100%" width="100%"/>
               </Carousel.Item>
             );
           })}

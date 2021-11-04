@@ -4,7 +4,7 @@ import {get, isEmpty} from "lodash";
 import {getStatus, getUserInfo, setLoginBox} from "components/login/login-slice";
 import {useDispatch, useSelector} from "react-redux";
 import {cacheUser} from 'common/js/cache'
-import {getDetailThunk, getUserLevelThunk, userDetail, userLevel} from './account-slice'
+import {getDetailThunk, getUserLevelThunk, getUserLikeSongsThunk,userDetail, userLevel} from './account-slice'
 import {logoutThunk} from '@/components/login/login-slice'
 export default function Account() {
     const dispatch = useDispatch();
@@ -19,6 +19,7 @@ export default function Account() {
         const uid = get(userInfo, 'profile.userId')
         dispatch(getDetailThunk(uid))
         dispatch(getUserLevelThunk())
+        dispatch(getUserLikeSongsThunk())
         console.log(profile, level)
     }, [])
     const navLogin = (

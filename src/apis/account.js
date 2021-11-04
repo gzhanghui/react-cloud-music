@@ -21,3 +21,16 @@ export const getUserLevel = function (uid) {
         return Promise.resolve(res.data)
     })
 };
+
+export const getUserLikeSongs = function (uid = `1422259951`) {
+    const url = '/api/likelist';
+    return request.get(url, {
+        params: {
+            uid
+        }
+    }).then((res) => {
+        const ids = res.data.ids
+        return Promise.resolve(ids)
+    })
+};
+

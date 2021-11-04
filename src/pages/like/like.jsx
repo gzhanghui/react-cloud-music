@@ -16,7 +16,7 @@ import {
 } from "./like-slice";
 
 export default function Like() {
-  const likeData = useSelector(likeList);
+  const likeSong = useSelector(likeList);
   const playData = useSelector(playlist);
   const dispatch = useDispatch();
   useEffect(() => {
@@ -40,7 +40,7 @@ export default function Like() {
         close();
       },
       onOk: (close) => {
-        dispatch(insertSong(likeData));
+        dispatch(insertSong(likeSong));
         dispatch(changeIndex(0));
         close();
       },
@@ -87,7 +87,7 @@ export default function Like() {
           </Card>
         </Col>
       </Row>
-      <SongList songList={likeData} handelSongLike={handelSongLike}></SongList>
+      <SongList songList={likeSong} handelSongLike={handelSongLike}></SongList>
     </Card>
   );
 }

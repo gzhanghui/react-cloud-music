@@ -16,12 +16,17 @@ import {
   currentSong,
   insertSong,
 } from "components/player/player-slice";
+import { userLikeSongs } from "components/account/account-slice";
 
 function SongList(props) {
   const { songList, handelSongLike } = props;
   const state = useSelector(audioState);
-  const song = useSelector(currentSong)
-  const songIndex =  songList.findIndex(item=>item.id===song.id)
+  const song = useSelector(currentSong);
+  const likeIds = useSelector(userLikeSongs);
+  const songIndex = songList.findIndex((item) => item.id === song.id);
+  const list = songList.map((song) =>
+    likeIds.includes(song.id) ? { ...song, isLike: true } : { ...song }
+  );
   const dispatch = useDispatch();
   return (
     <Table
@@ -80,7 +85,7 @@ function SongList(props) {
         { dataIndex: "albumName", title: "专辑" },
         { dataIndex: "duration", title: "时长" },
       ]}
-      dataSource={songList}
+      dataSource={list}
       size="small"
       onRow={(record) => {
         return {
