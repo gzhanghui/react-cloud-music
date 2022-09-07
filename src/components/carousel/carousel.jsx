@@ -1,11 +1,11 @@
 // /* eslint-disable react/no-string-refs */
-import React ,{Component} from 'react';
+import React, { Component } from 'react';
 import classnames from 'classnames';
 import PropTypes from 'prop-types';
 import { throttle } from 'lodash';
-import View from 'common/js/view';
-import { addResizeListener, removeResizeListener } from 'common/js/resize-event';
-import {ComponentContext} from './component-context'
+import View from '../../common/js/view.js';
+import { addResizeListener, removeResizeListener } from '../../common/js/resize-event';
+import { ComponentContext } from './component-context'
 export default class Carousel extends Component {
   constructor(props) {
     super(props);
@@ -20,11 +20,11 @@ export default class Carousel extends Component {
 
     this.throttledArrowClick = throttle(index => {
       this.setActiveItem(index);
-    },300, {leading:true});
+    }, 300, { leading: true });
 
-    this.throttledIndicatorHover = throttle( index => {
+    this.throttledIndicatorHover = throttle(index => {
       this.handleIndicatorHover(index);
-    },300);
+    }, 300);
 
     this.resetItemPosition = this._resetItemPosition.bind(this)
   }
@@ -56,7 +56,7 @@ export default class Carousel extends Component {
   }
 
   componentWillUnmount() {
-    removeResizeListener(this.root , this.resetItemPosition);
+    removeResizeListener(this.root, this.resetItemPosition);
     this.pauseTimer();
   }
 
@@ -150,7 +150,7 @@ export default class Carousel extends Component {
 
     if (isNaN(index) || index !== Math.floor(index)) {
       process.env.NODE_ENV !== 'production' &&
-      console.warn('[Element Warn][Carousel]index must be an integer.');
+        console.warn('[Element Warn][Carousel]index must be an integer.');
       return;
     }
 
@@ -202,15 +202,15 @@ export default class Carousel extends Component {
     const { hover, activeIndex, items } = this.state;
     return (
       <ComponentContext.Provider value={this}>
-      <div
-        ref={(root) => { this.root = root; }}
-        className={classnames('el-carousel', { 'el-carousel--card': this.iscard })}
-        onMouseEnter={this.handleMouseEnter.bind(this)}
-        onMouseLeave={this.handleMouseLeave.bind(this)}
-      >
         <div
-          className="el-carousel__container"
-          style={{height: height}}>
+          ref={(root) => { this.root = root; }}
+          className={classnames('el-carousel', { 'el-carousel--card': this.iscard })}
+          onMouseEnter={this.handleMouseEnter.bind(this)}
+          onMouseLeave={this.handleMouseLeave.bind(this)}
+        >
+          <div
+            className="el-carousel__container"
+            style={{ height: height }}>
             {
               arrow !== 'never' && (
                 <View show={arrow === 'always' || hover}>
@@ -240,33 +240,33 @@ export default class Carousel extends Component {
                 </View>
               )
             }
-          {this.props.children}
+            {this.props.children}
+          </div>
+          {
+            indicatorPosition !== 'none' && (
+              <ul
+                className={classnames('el-carousel__indicators', {
+                  'el-carousel__indicators--outside': indicatorPosition === 'outside' || this.iscard
+                })}
+              >
+                {
+                  items.map((item, index) => {
+                    return (
+                      <li
+                        key={index}
+                        className={classnames('el-carousel__indicator', { 'is-active': index === activeIndex })}
+                        onMouseEnter={this.throttledIndicatorHover.bind(this, index)}
+                        onClick={this.handleIndicatorClick.bind(this, index)}
+                      >
+                        <button className="el-carousel__button"></button>
+                      </li>
+                    )
+                  })
+                }
+              </ul>
+            )
+          }
         </div>
-        {
-          indicatorPosition !== 'none' && (
-            <ul
-              className={classnames('el-carousel__indicators', {
-                'el-carousel__indicators--outside': indicatorPosition === 'outside' || this.iscard
-              })}
-            >
-              {
-                items.map((item, index) => {
-                  return (
-                    <li
-                      key={index}
-                      className={classnames('el-carousel__indicator', { 'is-active': index === activeIndex })}
-                      onMouseEnter={this.throttledIndicatorHover.bind(this, index)}
-                      onClick={this.handleIndicatorClick.bind(this, index)}
-                    >
-                      <button className="el-carousel__button"></button>
-                    </li>
-                  )
-                })
-              }
-            </ul>
-          )
-        }
-      </div>
       </ComponentContext.Provider>
     )
   }

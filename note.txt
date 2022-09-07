@@ -1,0 +1,4 @@
+关于react-eslint自定义设置
+可从webpack.config.js里面设置
+也可以采用customize-cra + react-app-rewired得方式设置  //配置参考https://github.com/yannickcr/eslint-plugin-react#configuration
+react-app-rewire-eslint因为废除react-app-rewire新版本废除getBabelLoader方法 不能用

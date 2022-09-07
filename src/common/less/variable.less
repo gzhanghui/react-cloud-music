@@ -1,0 +1,74 @@
+.clearfix() {
+    zoom: 1;
+
+    &::before,
+    &::after {
+        display: table;
+        content: '';
+    }
+
+    &::after {
+        clear: both;
+    }
+}
+
+.size(@width; @height) {
+    width: @width;
+    height: @height;
+}
+
+
+
+.ellipsis(@value: 1) {
+    display: -webkit-box;
+    overflow: hidden;
+    -webkit-box-orient: vertical;
+    text-overflow: ellipsis;
+
+    -webkit-line-clamp: @value;
+}
+
+
+.no-wrap() {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+
+
+
+@font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'Helvetica Neue', Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
+
+@white: #fff;
+@black: #000;
+
+@primary-color: #0BBD70;
+@text-color: #848793;
+@text-color-secondary: @white;
+@text-color-highlight: @white;
+@text-selection-bg: @primary-color;
+@component-background: rgba(25, 26, 32, 1);
+
+
+@cubic-bezier: cubic-bezier(.72, .23, .67, 1.4);
+
+@text-transition: color .25s @cubic-bezier;
+
+@border-color: rgba(24, 25, 30, .04);
+
+
+@heading-color: @white;
+@aside-background: #030517;
+
+
+@font-size-base: 14px;
+@font-size-lg: 16px;
+@font-size-sm: 12px;
+@line-height-base: 1.5;
+@border-radius-base: 4px;
+@border-radius-sm: 2px;
+@padding-lg: 24px;
+@padding-md: 16px;
+@padding-sm: 12px;
+@padding-xs: 8px;

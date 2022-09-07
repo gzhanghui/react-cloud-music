@@ -1,7 +1,7 @@
 const Router = require('koa-router')
 const Joi = require('joi');
 const axios = require('axios')
-const moment =  require('moment')
+const moment = require('moment')
 // import {get} from 'lodash'
 const chalk = require('chalk')
 const { login_cellphone, login } = require('NeteaseCloudMusicApi')
@@ -9,6 +9,7 @@ const router = new Router()
 
 const log = console.log
 router.post('/login', async (ctx, next) => {
+    debugger
 
     // const p = {
     //     reqBody: {

@@ -11,6 +11,7 @@ class Scroll extends Component {
         super(props)
         this.wrapper = React.createRef();
         this.scroll = null
+        this.scrollToElement = this.scrollToElement.bind(this)
     }
     render() {
 
@@ -29,7 +30,7 @@ class Scroll extends Component {
         this.scroll = new BScroll(this.wrapper.current, {
             scrollY: true,
             scrollbar: this.props.scrollbar,
-            bounce:false,
+            bounce: false,
             mouseWheel: {
                 speed: 20,
                 invert: false,
@@ -82,7 +83,7 @@ Scroll.defaultProps = {
     },
     scrollX: false,
     scrollY: true,
-    eventPassthrough:'vertical'
+    eventPassthrough: 'vertical'
 }
 
 export default Scroll
