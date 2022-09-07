@@ -7,7 +7,7 @@
         {
             "console": "integratedTerminal",
             "internalConsoleOptions": "neverOpen",
-            "name": "nodemon",
+            "name": "nodemon music",
             "program": "${workspaceFolder}/server/app.js",
             "request": "launch",
             "restart": true,
@@ -16,15 +16,6 @@
                 "<node_internals>/**"
             ],
             "type": "pwa-node"
-        },
-        {
-            "type": "pwa-node",
-            "request": "launch",
-            "name": "Launch Program",
-            "skipFiles": [
-                "<node_internals>/**"
-            ],
-            "program": "${workspaceFolder}/server/app.js"
         },
         {
             "type": "pwa-node",

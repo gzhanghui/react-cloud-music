@@ -1,13 +1,12 @@
 /* eslint-disable */
-import React, { useRef, useEffect } from "react";
-import { Link } from "react-router-dom";
-import { Input, Avatar, Button } from "antd";
+import React, { useRef, useEffect, useCallback } from "react";
+import { Input, Button } from "antd";
 import { CloseOutlined } from "@ant-design/icons";
 import { useSpring, animated } from "@react-spring/web";
 import classNames from "classnames";
-import { formatName } from "common/js/song";
+// import { formatName } from "common/js/song";
 import { useSelector, useDispatch } from "react-redux";
-import { debounce, isEmpty } from "lodash";
+import { debounce, isEmpty, get } from "lodash";
 import Scroll from "@/components/scroll";
 import utils from "@/common/js/util";
 import {
@@ -23,57 +22,71 @@ import {
   setHistorySearch,
   searchWord,
   setSearchWord,
+  selectItem,
+  setSelectItem
 } from "./search-slice";
+import { insertSong, changeIndex } from "components/player/player-slice";
+
+
+
 export default function Search() {
   const suggest = useSelector(searchSuggest);
   const hot = useSelector(hotSearch);
   const word = useSelector(searchWord);
   const historyData = useSelector(historySearch);
   const visible = useSelector(panelVisible);
+  const select = useSelector(selectItem)
   const dispatch = useDispatch();
   const $panelRef = useRef(null);
   const $scroll = useRef(null);
   const $containerRef = useRef(null);
-  const preventBlurRef = useRef(false);
+  const $input = useRef(null)
+  const clickedOutside = useRef(false);
   useEffect(() => {
     dispatch(getHotDetailThunk());
   }, []);
   useEffect(() => {
     $scroll.current.refresh();
   }, [suggest]);
-  const getSuggest = debounce(function (val) {
-    dispatch(getSuggestThunk(val));
-  }, 300);
+
+  const getSuggest = useCallback(
+    debounce((val) => {
+      dispatch(getSuggestThunk(val));
+    }, 300),
+    []
+  )
   useEffect(() => {
     if (!word || isEmpty(`${word}`.trim())) {
       dispatch(clearSearchSuggest());
     } else {
-      getSuggest(word);
+      getSuggest(word)
     }
   }, [word]);
 
   useEffect(() => {
     window.addEventListener("mousedown", (e) => {
       const target = utils.getTargetFromEvent(e);
-      const clickedOutside = isClickOutside(target);
-      //  preventBlurRef.current = !clickedOutside;
-
-      if (!clickedOutside) {
-        preventBlurRef.current = true;
-        // Always set back in case `onBlur` prevented by user
+      const isOutside = isClickOutside(target);
+      clickedOutside.current = !isOutside;
+      if (!isOutside) {
+        clickedOutside.current = isOutside
         requestAnimationFrame(() => {
-          preventBlurRef.current = false;
-        });
-      } else {
-        if (clickedOutside) dispatch(togglePanel(false));
+          console.log( clickedOutside.current)
+          clickedOutside.current = true
+        })
+      }else{
+        dispatch(togglePanel(false));
       }
     });
   }, []);
 
+
+
+
   const opacity = useSpring({
     from: { opacity: 0, height: 0 },
     to: { opacity: visible ? 1 : 0, height: visible ? 435 : 0 },
-    onStart() {},
+    onStart() { },
     onRest() {
       $scroll.current.refresh();
     },
@@ -81,6 +94,13 @@ export default function Search() {
       tension: 500,
     },
   });
+  const inputSpring = useSpring({
+    from: { width: 154 },
+    to: { width: visible ? 298 : 154, borderRadius: visible ? 0 : 16 },
+    config: {
+      tension: 500,
+    },
+  })
 
   /**
    * 历史
@@ -95,23 +115,28 @@ export default function Search() {
           <Button
             icon={<i className="iconfont icon-trash"></i>}
             type="link"
-            onClick={() => {
+            onClick={(e) => {
+              e.stopPropagation();
               dispatch(clearHistory("all"));
             }}
           >
             清除记录
           </Button>
         </div>
-        {data.map((word, index) => {
+        {data.map((name, index) => {
           return (
             <div
-              key={`history-${word}`}
-              className="search-result-item search-item-history"
+              key={`history-${name}`}
+              className={
+                classNames('search-result-item search-item-history', {
+                  'active': index === select
+                })
+              }
               onClick={() => {
-                dispatch(setSearchWord(word));
+                dispatch(setSearchWord(name));
               }}
             >
-              <span>{word}</span>
+              <span>{name}</span>
               <Button
                 className="clear-history-btn"
                 type="link"
@@ -141,7 +166,11 @@ export default function Search() {
           return (
             <div
               key={item["searchWord"]}
-              className="search-result-item search-result-simple"
+              className={
+                classNames('search-result-item search-result-simple', {
+                  'active': index + historyData.length === select
+                })
+              }
               onClick={() => {
                 dispatch(setSearchWord(item.searchWord));
               }}
@@ -158,18 +187,25 @@ export default function Search() {
       </React.Fragment>
     );
   }
-
   function renderSongs(data) {
     return (
       <React.Fragment>
-        <div className="search-result-title ">
-          <span>单曲</span>
-        </div>
-        {data.map((item) => {
+        {data.map((item, index) => {
           return (
-            <div key={item.id} className="search-result-item search-item-song">
+            <div key={item.id}
+              className={
+                classNames('search-result-item search-item-song', {
+                  'active': index === select
+                })
+              }
+              onClick={() => {
+                console.log(item)
+                dispatch(insertSong(item));
+                dispatch(changeIndex(0));
+              }}
+            >
               <span>
-                {item.name}-<em>{item.artists}</em>
+                {item.name}-<em>{item.artistsName}</em>
               </span>
             </div>
           );
@@ -178,7 +214,105 @@ export default function Search() {
     );
   }
 
-  function renderPlaylists(data) {
+
+  // eslint-disable-next-line no-unused-vars
+  function isClickOutside(target) {
+    return !utils.elementsContains(
+      [$panelRef.current, $containerRef.current],
+      target
+    );
+  }
+
+  return (
+    <React.Fragment>
+      <animated.div style={inputSpring} className="search-wrap" ref={$containerRef}>
+        <Input
+          ref={$input}
+          value={word}
+          prefix={<i className="iconfont icon-search"></i>}
+          placeholder="搜索"
+          allowClear
+          onFocus={() => {
+            dispatch(togglePanel(true));
+          }}
+          onBlur={() => {
+            // debugger
+            let { activeElement } = document;
+            // while (activeElement && activeElement.shadowRoot) {
+            //   activeElement = activeElement.shadowRoot.activeElement;
+            // }
+            console.log('clickedOutside', clickedOutside.current)
+
+            if (clickedOutside.current) {
+              return;
+            }
+            // if (isClickOutside(activeElement)) {
+            //   console.log(111)
+            // }
+            dispatch(togglePanel(false));
+          }}
+          onChange={(e) => {
+            dispatch(setSearchWord(e.target.value));
+          }}
+          onPressEnter={(e) => {
+            const value = word.length ? get(suggest, `songs[${select}].name`, '') : get([...historyData, ...hot], `${select}`)
+            console.log(value)
+            if (!e.target.value.trim().length) return;
+            dispatch(setSearchWord(value));
+            dispatch(setHistorySearch(e.target.value));
+          }}
+          onKeyDown={(e) => {
+            console.log(e)
+            if (![38, 40].includes(e.keyCode)) return
+            e.preventDefault()
+            const hotLength = historyData.length + hot.length
+            const suggestength = get(suggest, 'songs', []).length
+            const length = isEmpty(word) ? hotLength : suggestength
+            let selectIndex = select
+            if (e.keyCode === 38) {
+              selectIndex = selectIndex < 1 ? length - 1 : selectIndex - 1
+            }
+            if (e.keyCode === 40) {
+              selectIndex = selectIndex >= length - 1 ? 0 : selectIndex + 1
+            }
+            dispatch(setSelectItem(selectIndex))
+          }}
+        />
+        <animated.div
+          style={opacity}
+          className={classNames("search-panel")}
+          ref={$panelRef}
+        >
+          <Scroll ref={$scroll}>
+            <div
+              className={classNames("history-hot-panel", {
+                hide: !isEmpty(word),
+              })}
+            >
+              <div className={classNames({
+                hide: isEmpty(historyData),
+              })}>{renderHistory(historyData)}</div>
+              <div>{renderHot(hot)}</div>
+            </div>
+            <div
+              className={classNames("search-suggest-panel", {
+                hide: isEmpty(word),
+              })}
+            >
+              {renderSongs(get(suggest, 'songs', []))}
+            </div>
+          </Scroll>
+        </animated.div>
+      </animated.div>
+    </React.Fragment>
+  );
+}
+
+/**
+ * 
+ * 
+ * 
+ *   function renderPlaylists(data) {
     return (
       <React.Fragment>
         <div className="search-result-title">
@@ -268,68 +402,4 @@ export default function Search() {
       return searchSuggestMap[name](itemData);
     });
   }
-  // eslint-disable-next-line no-unused-vars
-  function isClickOutside(target) {
-    return !utils.elementsContains(
-      [$panelRef.current, $containerRef.current],
-      target
-    );
-  }
-
-  return (
-    <React.Fragment>
-      <div className="search-wrap" ref={$containerRef}>
-        <Input
-          value={word}
-          prefix={<i className="iconfont icon-search"></i>}
-          placeholder="搜索"
-          onFocus={() => {
-            dispatch(togglePanel(true));
-          }}
-          onBlur={() => {
-            setTimeout(() => {
-              let { activeElement } = document;
-              while (activeElement && activeElement.shadowRoot) {
-                activeElement = activeElement.shadowRoot.activeElement;
-              }
-              if (preventBlurRef.current || !isClickOutside(activeElement)) {
-                return;
-              }
-              dispatch(togglePanel(false));
-            }, 0);
-          }}
-          onChange={(e) => {
-            dispatch(setSearchWord(e.target.value));
-          }}
-          onPressEnter={(e) => {
-            if (!e.target.value.trim().length) return;
-            dispatch(setHistorySearch(e.target.value));
-          }}
-        />
-        <animated.div
-          style={opacity}
-          className={classNames("search-panel")}
-          ref={$panelRef}
-        >
-          <Scroll ref={$scroll}>
-            <div
-              className={classNames("history-hot-panel", {
-                hide: !isEmpty(word),
-              })}
-            >
-              <div>{renderHistory(historyData)}</div>
-              <div>{renderHot(hot)}</div>
-            </div>
-            <div
-              className={classNames("search-suggest-panel", {
-                hide: isEmpty(word),
-              })}
-            >
-              {renderSearchSuggest(suggest)}
-            </div>
-          </Scroll>
-        </animated.div>
-      </div>
-    </React.Fragment>
-  );
-}
+ * * */

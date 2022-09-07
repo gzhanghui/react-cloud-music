@@ -1,15 +1,16 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { isEmpty, uniq } from 'lodash';
-import {cacheSearch} from 'common/js/cache'
+import { uniq } from 'lodash';
+import { cacheSearch } from 'common/js/cache'
 import { getHotDetail, getSuggest } from 'apis/search'
 
 const initialState = {
-    searchWord:'',
+    searchWord: '',
     searchRes: [],
     panelVisible: false,
     searchSuggest: [],
     hotSearch: [],
-    historySearch:  cacheSearch.get() || []
+    selectItem: 0,
+    historySearch: cacheSearch.get() || []
 };
 export const getHotDetailThunk = createAsyncThunk(
     'search/getHotDetail',
@@ -22,9 +23,11 @@ export const getSuggestThunk = createAsyncThunk(
     'search/getSuggest',
     async (keywords) => {
         const res = await getSuggest(keywords);
-        return res.result;
+        return { songs: res };
     }
 );
+
+
 export const searchSlice = createSlice({
     name: 'search',
     initialState,
@@ -48,28 +51,30 @@ export const searchSlice = createSlice({
             }
             cacheSearch.set(state.historySearch)
         },
-        setSearchWord:(state, action) => {
+        setSearchWord: (state, action) => {
             state.searchWord = action.payload
         },
-    
+        setSelectItem: (state, action) => {
+            state.selectItem = action.payload
+        }
     },
     extraReducers: {
         [getHotDetailThunk.fulfilled]: (state, action) => {
-            state.hotSearch = action.payload.splice(0,10)
+            state.hotSearch = action.payload.splice(0, 10)
         },
         [getSuggestThunk.fulfilled]: (state, action) => {
-            if (isEmpty(action.payload)) return
-            const data = {}
-            action.payload.order.forEach(key => {
-                data[key] = action.payload[key]
-            })
-            state.searchSuggest = data
+            // if (isEmpty(action.payload)) return
+            // const data = {}
+            // action.payload.order.forEach(key => {
+            //     data[key] = action.payload[key]
+            // })
+            state.searchSuggest = action.payload
         },
     }
 
 });
 
-export const { setHistorySearch, clearSearchSuggest, clearHistory, togglePanel ,setSearchWord} = searchSlice.actions;
+export const { setHistorySearch, clearSearchSuggest, clearHistory, togglePanel, setSearchWord, setSelectItem } = searchSlice.actions;
 
 
 export const hotSearch = (state) => state.search.hotSearch;
@@ -77,6 +82,7 @@ export const panelVisible = (state) => state.search.panelVisible;
 export const historySearch = (state) => state.search.historySearch;
 export const searchSuggest = (state) => state.search.searchSuggest;
 export const searchWord = (state) => state.search.searchWord;
- 
+export const selectItem = (state) => state.search.selectItem;
+
 export default searchSlice.reducer;
 

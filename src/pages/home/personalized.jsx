@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
+import transform from 'common/js/transform'
 import { Card } from "antd";
 import { personalized, personalizedThunk } from "./home-slice";
 function Personalized() {
@@ -61,7 +62,7 @@ function Personalized() {
                   <img src={item.picUrl} alt="" width="102px" />
                   <div className="play-count">
                     <i className="iconfont icon-erji">{/**/}</i>
-                    <span>{item.playCount}</span>
+                    <span>{transform(item.playCount)}</span>
                   </div>
                   <div className="play-icon">
                     <i className="iconfont icon-videofill">{/**/}</i>

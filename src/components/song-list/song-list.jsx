@@ -37,6 +37,7 @@ function SongList(props) {
         {
           dataIndex: "isLike",
           title: " ",
+          width: 56,
           render: (text, record, index) => (
             <button
               className="like-button"
@@ -55,6 +56,7 @@ function SongList(props) {
         {
           dataIndex: "name",
           title: "歌曲名",
+          ellipsis:true,
           render: (text, record, index) => (
             <div className="table-player-control">
               <span className="name">{text}</span>
@@ -81,9 +83,9 @@ function SongList(props) {
             </div>
           ),
         },
-        { dataIndex: "artistsName", title: "歌手" },
-        { dataIndex: "albumName", title: "专辑" },
-        { dataIndex: "duration", title: "时长" },
+        { dataIndex: "artistsName", title: "歌手"    ,     ellipsis:true,},
+        { dataIndex: "albumName", title: "专辑"  ,     ellipsis:true,},
+        { dataIndex: "duration", title: "时长"  ,     ellipsis:true, width: 66,},
       ]}
       dataSource={list}
       size="small"

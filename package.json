@@ -27,6 +27,8 @@
   "scripts": {
     "start": "craco start",
     "build": "craco build",
+    "serve:debug": "export NODE_ENV='development' && nodemon server/app.js",
+    "serve:start": "export NODE_ENV='production' && nodemon server/app.js",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
@@ -46,11 +48,20 @@
   },
   "devDependencies": {
     "@craco/craco": "^6.1.2",
+    "NeteaseCloudMusicApi": "^4.0.23",
+    "chalk": "^4.1.2",
     "craco-less": "^1.17.1",
     "eslint-plugin-react": "^7.24.0",
+    "joi": "^17.4.2",
     "koa": "^2.13.4",
-    "koa-bodyparser": "^4.3.0",
+    "koa-body": "^4.2.0",
     "koa-onerror": "^4.1.0",
-    "koa-router": "^10.1.1"
+    "koa-router": "^10.1.1",
+    "koa-static": "^5.0.0",
+    "module-alias": "^2.2.2",
+    "require-directory": "^2.1.1"
+  },
+  "_moduleAliases": {
+    "@root": "server"
   }
 }

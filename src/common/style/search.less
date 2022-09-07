@@ -1,7 +1,13 @@
 .search-wrap {
     position: relative;
-    width: 340px;
-
+    width: 154px;
+    .ant-input-affix-wrapper{
+        height: 32px;
+        border-radius: 16px;
+    }
+    input{
+        font-size: 12px;
+    }
     .search-panel {
         position: absolute;
         top: 52px;
@@ -60,8 +66,8 @@
                 margin-left: 12px;
             }
         }
-        &:hover{
-            color: #00cc4c;
+        &:hover,&.active{
+            color: @primary-color;
             background-color: hsla(0,0%,100%,.03);
         }
     }

@@ -7,7 +7,7 @@ export const PLAY_MODE = {
     loop: { text: '随机播放', icon: 'icon-random', code: 1 },
     random: { text: '单曲循环', icon: 'icon-loop', code: 2 }
 }
-
+console.log(uniqBy(cachePlaylist.get() || [], 'id'))
 const initialState = {
     audioState: {
         buffered: [],
@@ -22,7 +22,7 @@ const initialState = {
     songError: false,
     currentIndex: -1,
     currentLyric: '',
-    playList: cachePlaylist.get() || [],
+    playList: uniqBy(cachePlaylist.get() || [], 'id'),
     panelVisible: false,
     currentLineNum: 0,
     currentMode: cachePlayMode.get() || PLAY_MODE.sequence.code

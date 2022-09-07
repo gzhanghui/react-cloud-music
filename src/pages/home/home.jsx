@@ -52,12 +52,12 @@ export default function Home() {
       </Card>
       <Personalized />
       <Row>
-        <Col xs={24} sm={24} md={10}>
+        <Col xs={24} sm={24} md={12}>
           <Card title="热门歌曲" size="small">
             <SongList songList={newSongList}></SongList>
           </Card>
         </Col>
-        <Col xs={24} sm={24} md={14}>
+        <Col xs={24} sm={24} md={12}>
           <Card title="独家放送" size="small">
             <MvList list={privateMv}></MvList>
           </Card>
