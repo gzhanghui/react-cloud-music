@@ -102,6 +102,14 @@ export function randomOrder(arr) {
     return arr;
 }
 
+
+
+
+
+export function random(lower, upper) {
+    return lower + Math.floor(Math.random() * (upper - lower + 1));
+}
+
 function stringify(val) {
     return JSON.stringify(val)
 }
@@ -112,6 +120,10 @@ function parse(val) {
         return val || undefined
     }
 }
+
+
+
+
 export const storage = new Storage()
 
 

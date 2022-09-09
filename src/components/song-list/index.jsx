@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import PropTypes from 'prop-types'
+import Immutable from 'immutable'
 class SongList extends Component {
     constructor(props) {
         super(props)
@@ -30,7 +31,7 @@ class SongList extends Component {
 }
 
 SongList.propTypes = {
-    list: PropTypes.array,
+    list: PropTypes.oneOfType([PropTypes.arrayOf(Immutable.List, PropTypes.array), PropTypes.object]),
     onSelectedItem: PropTypes.func
 }
 

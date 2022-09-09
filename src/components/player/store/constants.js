@@ -1,9 +1,10 @@
 
-export const SCREEN = 'player/fullscreen'
+export const FULLSCREEN = 'player/fullscreen'
 export const PLAYLIST_VISIBLE = 'player/play_list_visible'
 
 
 export const CURRENT_TIME = 'player/current_time'
+export const CHANGE_CURRENT_TIME = 'player/change_current_time'
 export const DURATION = 'player/duration'
 export const PLAYING = 'player/playing'
 export const READY = 'player/ready'
@@ -15,7 +16,6 @@ export const LYRIC_LINE_NUM = 'player/lyric_line_num'
 
 export const INSERT_SONG = 'player/insert_song'
 export const MOVE_SONG = 'player/move_song'
-export const RANDOM_SONG = 'player/random_song'
 
 export const NEXT_SONG = 'player/next_song'
 export const PREV_SONG = 'player/prev_song'

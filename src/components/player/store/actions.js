@@ -1,8 +1,8 @@
 
 import * as constants from './constants'
 
-export const screenAction = () => ({
-    type: constants.SCREEN
+export const fullscreenAction = () => ({
+    type: constants.FULLSCREEN
 })
 
 export const durationAction = (duration) => ({
@@ -13,9 +13,14 @@ export const currentTimeAction = (currentTime) => ({
     type: constants.CURRENT_TIME,
     currentTime
 })
+export const changeCurrentTimeAction = (time) => ({
+    type: constants.CHANGE_CURRENT_TIME,
+    time
+})
 
-export const playStateAction = () => ({
-    type: constants.PLAYING
+export const playStateAction = (playing) => ({
+    type: constants.PLAYING,
+    playing
 })
 
 export const readyAction = (ready) => ({
@@ -43,10 +48,6 @@ export const insertSongAction = (insertSong) => ({
     type: constants.INSERT_SONG,
     insertSong
 })
-export const randomSongAction = (randomSong) => ({
-    type: constants.RANDOM_SONG,
-    randomSong
-})
 
 
 export const moveSongAction = (result) => ({
@@ -71,7 +72,6 @@ export const changeSongAction = (song) => ({
     type: constants.CHANGE_SONG,
     song,
 })
-
 
 export const changeModeAction = () => ({
     type: constants.SET_PLAY_MODE

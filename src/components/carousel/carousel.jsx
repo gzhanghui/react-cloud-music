@@ -283,7 +283,7 @@ Carousel.propTypes = {
   arrow: PropTypes.string,
   type: PropTypes.oneOf(['card', 'flatcard']),
   onChange: PropTypes.func,
-  children: PropTypes.array
+  children: PropTypes.oneOfType([PropTypes.array, PropTypes.object])
 };
 
 Carousel.defaultProps = {

@@ -12,7 +12,7 @@ import Carousel from '@/components/carousel'
 
 
 import { actionCreators } from './store'
-import { changeSongAction } from '../../components/player/store/actions'
+import { changeSongAction, playStateAction } from '../../components/player/store/actions'
 
 class Home extends Component {
 
@@ -68,7 +68,7 @@ class Home extends Component {
                 </div>
               </Card>
               <Card header="推荐歌单" extra={<span className="extra"><a className="more-btn"><span>更多</span><i className="icon-arrow-right iconfont"></i></a></span>} headerClassName="">
-                <SongList list={this.props.songs} onSelectedItem={this.props.selectedItem}></SongList>
+                <SongList list={this.props.recommendSongs} onSelectedItem={this.props.selectedItem}></SongList>
               </Card>
             </Scroll>
           </div>
@@ -82,12 +82,11 @@ class Home extends Component {
 
 }
 const mapStateToProps = (state) => {
-  const data = state.get('recommend').toJS()
   return {
-    banner: data.banner,
-    playlist: data.playlist,
-    songs: data.songs,
-    bannerIndex: data.bannerIndex
+    banner: state.getIn(['recommend', 'banner']),
+    playlist: state.getIn(['recommend', 'playlist']),
+    recommendSongs: state.getIn(['recommend', 'recommendSongs']),
+    bannerIndex: state.getIn(['recommend', 'bannerIndex'])
   }
 }
 const mapDispatchToProps = (dispatch) => {
@@ -100,6 +99,9 @@ const mapDispatchToProps = (dispatch) => {
     selectedItem(item) {
       dispatch(actionCreators.insertSongAction(item))
       dispatch(changeSongAction(item))
+      dispatch(playStateAction(true))
+
+
     },
     handleBannerChange(index) {
       dispatch(actionCreators.bannerChangeAction(index))

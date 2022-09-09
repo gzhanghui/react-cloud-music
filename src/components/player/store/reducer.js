@@ -1,6 +1,6 @@
 import { fromJS } from 'immutable'
 import { cachePlaylist } from '@/common/js/cache'
-import { insertArray, moveArray, randomOrder } from '@/common/js/util'
+import { insertArray, moveArray, random } from '@/common/js/util'
 import { PLAY_MODE } from '@/common/js/config'
 import * as constants from './constants'
 
@@ -8,7 +8,7 @@ import * as constants from './constants'
 const defaultState = fromJS({
     refs: {},
     songs: [],
-    lyric: { lines: [] },
+    lyric: [],
     song: {},
     duration: 0,
     volume: 0.2,
@@ -24,7 +24,7 @@ const defaultState = fromJS({
 export default (state = defaultState, action) => {
     const { type } = action;
     switch (type) {
-        case constants.SCREEN: {
+        case constants.FULLSCREEN: {
             return state.set('fullscreen', !state.get('fullscreen'));
         }
         case constants.CURRENT_TIME: {
@@ -36,7 +36,19 @@ export default (state = defaultState, action) => {
         }
 
         case constants.READY: {
-            return state.set('ready', action.ready);
+
+            const currentSong = state.get('song')
+            const ready = action.ready
+            const playing = state.get('playing')
+            if (!ready) state.set('ready', action.ready)
+            const $cover = state.get('refs').$cover
+            const $audio = state.get('refs').$audio
+            $cover.setImage(currentSong.image)
+            if (playing) {
+                $cover.start()
+                $audio.play()
+            }
+            return state.set('ready', action.ready)
         }
         case constants.VOLUME: {
             return state.set('volume', action.volume);
@@ -46,48 +58,48 @@ export default (state = defaultState, action) => {
         }
         case constants.PLAYING: {
             const currentSong = state.get('song')
-            if (!currentSong.url) {
-                return state
-            }
-            const playing = state.get('playing')
+            const ready = state.get('ready')
+            const playing = action.playing
             const $cover = state.get('refs').$cover
             const $audio = state.get('refs').$audio
-            $cover.setImage(currentSong.image)
-
-            if (!playing) {
+            if (!currentSong.url) return state
+            if (!ready) {
+                return state.set('playing', playing)
+            }
+            if (playing) {
                 $cover.start()
                 $audio.play()
             } else {
                 $cover.stop()
                 $audio.pause()
             }
-            return state.set('playing', !playing);
+            return state.set('playing', playing);
+        }
+        case constants.CHANGE_SONG: {
+            return state.merge({ 'song': action.song })
         }
         case constants.LYRIC_LINE_NUM: {
-            const num = findCurrentNum(state.get('lyric'), state.get('currentTime'))
+            const num = findCurrentNum(state.get('lyric'), state.get('currentTime') * 1000)
             const $scroll = state.get('refs').$scroll
             const currentLine = state.get(['player', 'lyricLineNum'])
             if (currentLine === num) return state;
             if (num > 3) {
                 const lineEl = $scroll.wrapper.current.getElementsByTagName("p")[num]
-                if (lineEl) {
-                    $scroll.scrollToElement(lineEl, 1000);
-                }
+                if (lineEl) $scroll.scrollToElement(lineEl, 1000);
             }
             return state.set('lyricLineNum', num);
         }
-
-        case constants.RANDOM_SONG: {
-            return state.set('playlist', randomOrder(action.randomSong));
+        case constants.CHANGE_CURRENT_TIME: {
+            const $audio = state.get('refs').$audio
+            $audio.currentTime = action.time
+            return state
         }
+
         case constants.PLAYLIST_VISIBLE: {
             const visible = state.get('playlistVisible')
-            console.log(visible)
             return state.set('playlistVisible', !visible);
         }
-        case constants.CHANGE_SONG: {
-            return state.merge({ 'ready': false, 'song': action.song, 'playing': false })
-        }
+
         case constants.SET_PLAY_MODE: {
             const mode = state.get('mode')
             return state.set('mode', (mode + 1) % 3);
@@ -102,7 +114,8 @@ export default (state = defaultState, action) => {
             const list = playlist.toJS()
             insertArray(list, action.insertSong, (item) => item.id === action.insertSong.id, 200)
             cachePlaylist.set((list))
-            return state.set('playlist', fromJS(list))
+            return state.merge({ 'playlist': fromJS(list), 'ready': false })
+
         }
         case constants.MOVE_SONG: {
             const playlist = state.get('playlist')
@@ -122,6 +135,11 @@ export default (state = defaultState, action) => {
                 return state.set('song', song)
             }
             let index = playlist.findIndex(item => item.get('id') === state.get('song').id)
+            if (mode === PLAY_MODE.random) {
+                index = random(0, playlist.count() - 1)
+                console.log(index, playlist.toJS())
+                return state.set('song', playlist.toJS()[index])
+            }
             if (index < 0) return state
             return playlist.toJS()[index + 1] ? state.set('song', playlist.toJS()[index + 1]) : state.set('song', playlist.toJS()[index])
         }
@@ -142,7 +160,7 @@ export default (state = defaultState, action) => {
 
 
 function findCurrentNum(lyric, time) {
-    const lines = lyric.get('lines')
+    const lines = lyric
     for (let i = 0; i < lines.length; i++) {
         if (time <= lines[i].time) return i
     }

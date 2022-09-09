@@ -3,7 +3,7 @@ import { fromJS } from 'immutable'
 import * as constants from './constants'
 const defaultState = fromJS({
     playlist: [],
-    songs: [],
+    recommendSongs: [],
     banner: [],
     bannerIndex: 0
 })
@@ -14,7 +14,7 @@ export default (state = defaultState, action) => {
     }
 
     if (type === constants.RECOMMEND_SONGS_ASYNC) {
-        return state.set('songs', action.songs)
+        return state.set('recommendSongs', action.songs)
     }
     if (type === constants.GET_BANNER_ASYNC) {
         return state.set('banner', action.banner)

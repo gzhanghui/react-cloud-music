@@ -46,7 +46,7 @@ const SortableItem = SortableElement(({ item, song, state, handleItemClick }) =>
 const SortableList = SortableContainer(({ list, song, state, handleItemClick }) => {
   return (
     <ul className="list-content">
-      {list.map((item, index) => (<SortableItem key={item.get('id')} state={state} handleItemClick={handleItemClick} item={item} song={song} index={index} />))}
+      {list.map((item, index) => (<SortableItem key={index} state={state} handleItemClick={handleItemClick} item={item} song={song} index={index} />))}
     </ul>
   );
 });
@@ -63,10 +63,10 @@ class Player extends React.Component {
         <audio autoPlay={false}
           id="audio"
           preload='auto'
-          src={this.props.song.url}
+          src={`http://music.163.com/song/media/outer/url?id=${this.props.song.id}.mp3`}
           ref={(audio) => { this.$audio = audio; }}
           onTimeUpdate={this.props.handleTimeupdate}
-          onCanPlay={this.props.handleCanPlay}
+          onCanPlay={() => { this.props.handleCanPlay(this.props.song) }}
           onEnded={this.props.handleEnded}
         ></audio>
         <Spring
@@ -124,7 +124,7 @@ class Player extends React.Component {
                     </div>
                     <div className="lyric-panel">
                       <Scroll ref={(scroll) => { this.$scroll = scroll; }}>
-                        {lyric.get && lyric.get('lines').map((item, index) => {
+                        {lyric.map((item, index) => {
                           return <p className={classNames('lyric-line', { 'active': lyricLineNum === index })} key={index}>{item.txt}</p>
                         })}
                         {JSON.stringify(lyric)}
@@ -149,7 +149,7 @@ class Player extends React.Component {
         </div>
         <div className="controls">
           <button className="iconfont icon-prev" onClick={this.props.prevSong}></button>
-          <button onClick={this.props.handleTogglePlay}>
+          <button onClick={() => { this.props.handleTogglePlay(this.props.playing) }}>
             <i className={classNames('iconfont toggle', {
               'icon-play': !playing,
               'icon-pause': playing && ready
@@ -163,8 +163,8 @@ class Player extends React.Component {
           <Slider
             tipFormatter={() => formatTime(currentTime)}
             defaultValue={0} value={currentTime * 1000} max={duration}
-            onAfterChange={() => { this.$audio.play(); }}
-            onChange={(value) => { this.$audio.pause(); this.$audio.currentTime = value / 1000 }}
+            onAfterChange={this.props.handleAfterTimeChange}
+            onChange={(value) => { this.props.handleTimeChange(value / 1000) }}
           />
           <span className="duration">{formatTime(duration / 1000)}</span>
         </div>
@@ -184,7 +184,7 @@ class Player extends React.Component {
               max={1}
               defaultValue={volume}
               tipFormatter={(val) => `${Math.ceil(val * 100)}`}
-              onChange={(value) => { this.$audio.volume = value }}
+              onChange={(value) => { this.props.refs.$audio.volume = value }}
             />
           </div>
           <button className="iconfont icon-list" onClick={this.props.handleToggleVisible}></button>
@@ -208,12 +208,6 @@ class Player extends React.Component {
     this.$cover = new DrawCover(this.$canvas, albumImage)
     this.props.initRefs({ $audio: this.$audio, $scroll: this.$scroll, $cover: this.$cover })
   }
-  componentDidUpdate(prevProps) {
-    const index = this.props.playlist.findIndex(item => item.id === prevProps.song.id)
-    if (index < 0 && prevProps.song.id !== this.props.song.id) {
-      this.props.handleInsertSong(prevProps.song)
-    }
-  }
 
 }
 
@@ -236,21 +230,23 @@ const mapState = (state) => {
 }
 const mapDispatch = (dispatch) => {
   return {
+
     initRefs(ref) {
       dispatch(actionCreators.initRefsAction(ref))
     },
 
     toggleScreen() {
-      dispatch(actionCreators.screenAction())
+      dispatch(actionCreators.fullscreenAction())
     },
 
-    handleCanPlay() {
+    handleCanPlay(song) {
       dispatch(actionCreators.readyAction(true))
       dispatch(actionCreators.durationAction())
+      dispatch(actionCreators.getLyricAction(song.id))
     },
 
-    handleTogglePlay() {
-      dispatch(actionCreators.playStateAction())
+    handleTogglePlay(playing) {
+      dispatch(actionCreators.playStateAction(!playing))
     },
 
     handleTimeupdate(e) {
@@ -263,8 +259,7 @@ const mapDispatch = (dispatch) => {
     },
 
     onDragEnd(result) {
-      const { oldIndex, newIndex } = result
-      dispatch(actionCreators.moveSongAction({ source: oldIndex, destination: newIndex }))
+      dispatch(actionCreators.moveSongAction({ source: result.oldIndex, destination: result.newIndex }))
     },
     handleInsertSong(song) {
       dispatch(actionCreators.insertSongAction(song))
@@ -279,16 +274,27 @@ const mapDispatch = (dispatch) => {
     },
 
     handleEnded() {
-      dispatch(actionCreators.prevSongAction())
+      dispatch(actionCreators.nextSongAction())
     },
 
     handleChangeMode() {
       dispatch(actionCreators.changeModeAction())
     },
     handleItemClick(item) {
-      dispatch(actionCreators.changeSongAction(item.toJS()))
-      dispatch(actionCreators.playStateAction())
+      dispatch(actionCreators.changeSongAction(item))
+      dispatch(actionCreators.playStateAction(false))
+    },
+    getSongLyric(id) {
+      dispatch(actionCreators.getLyricAction(id))
+    },
+    handleAfterTimeChange() {
+      dispatch(actionCreators.playStateAction(true))
+    },
+    handleTimeChange(time) {
+      dispatch(actionCreators.playStateAction(false))
+      dispatch(actionCreators.changeCurrentTimeAction(time))
     }
+
 
   }
 }

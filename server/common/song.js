@@ -24,7 +24,7 @@ const getSongUrl = async function (id) {
  */
 const getLyric = async function (id) {
     try {
-        const res = lyric(id)
+        const res = await lyric({ id })
         return res.body
     } catch (error) {
         return error
