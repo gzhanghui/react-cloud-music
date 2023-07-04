@@ -1,10 +1,19 @@
 {
     "cSpell.words": [
         "antd",
+        "catlist",
+        "highquality",
         "iconfont",
         "Netease",
         "newsong",
         "swiper",
-        "tnum"
-    ]
+        "tnum",
+        "toplist"
+    ],
+    "editor.formatOnSave": true,
+    "editor.formatOnType": true,
+    "editor.formatOnPaste": true,
+    "[javascript]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    }
 }

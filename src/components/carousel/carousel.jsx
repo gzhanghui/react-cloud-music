@@ -1,11 +1,11 @@
 // /* eslint-disable react/no-string-refs */
-import React, { Component } from 'react';
-import classnames from 'classnames';
-import PropTypes from 'prop-types';
-import { throttle } from 'lodash';
-import View from '../../common/js/view.js';
-import { addResizeListener, removeResizeListener } from '../../common/js/resize-event';
-import { ComponentContext } from './component-context'
+import React, { Component } from "react";
+import classnames from "classnames";
+import PropTypes from "prop-types";
+import { throttle } from "lodash";
+import View from "../../common/js/view.js";
+import { addResizeListener, removeResizeListener } from "../../common/js/resize-event";
+import { ComponentContext } from "./component-context";
 export default class Carousel extends Component {
   constructor(props) {
     super(props);
@@ -15,28 +15,28 @@ export default class Carousel extends Component {
       activeIndex: -1,
       containerWidth: 0,
       timer: null,
-      hover: false
+      hover: false,
     };
 
-    this.throttledArrowClick = throttle(index => {
-      this.setActiveItem(index);
-    }, 300, { leading: true });
+    this.throttledArrowClick = throttle(
+      (index) => {
+        this.setActiveItem(index);
+      },
+      300,
+      { leading: true }
+    );
 
-    this.throttledIndicatorHover = throttle(index => {
+    this.throttledIndicatorHover = throttle((index) => {
       this.handleIndicatorHover(index);
     }, 300);
 
-    this.resetItemPosition = this._resetItemPosition.bind(this)
+    this.resetItemPosition = this._resetItemPosition.bind(this);
   }
 
-
-
   componentDidMount() {
-
-
     if (this.props.initialIndex < this.state.items.length && this.props.initialIndex >= 0) {
       this.setState({
-        activeIndex: this.props.initialIndex
+        activeIndex: this.props.initialIndex,
       });
     }
 
@@ -73,12 +73,10 @@ export default class Carousel extends Component {
   itemInStage(item, index) {
     const length = this.state.items.length;
 
-    if (index === length - 1 && item.state.inStage && this.state.items[0].state.active ||
-      (item.state.inStage && this.state.items[index + 1] && this.state.items[index + 1].state.active)) {
-      return 'left';
-    } else if (index === 0 && item.state.inStage && this.state.items[length - 1].state.active ||
-      (item.state.inStage && this.state.items[index - 1] && this.state.items[index - 1].state.active)) {
-      return 'right';
+    if ((index === length - 1 && item.state.inStage && this.state.items[0].state.active) || (item.state.inStage && this.state.items[index + 1] && this.state.items[index + 1].state.active)) {
+      return "left";
+    } else if ((index === 0 && item.state.inStage && this.state.items[length - 1].state.active) || (item.state.inStage && this.state.items[index - 1] && this.state.items[index - 1].state.active)) {
+      return "right";
     }
 
     return false;
@@ -93,7 +91,7 @@ export default class Carousel extends Component {
   }
 
   handleButtonLeave() {
-    this.state.items.forEach(item => {
+    this.state.items.forEach((item) => {
       item.setState({ hover: false });
     });
   }
@@ -138,8 +136,8 @@ export default class Carousel extends Component {
   setActiveItem(index) {
     let { activeIndex } = this.state;
 
-    if (typeof index === 'string') {
-      const filteredItems = this.state.items.filter(item => item.props.name === index);
+    if (typeof index === "string") {
+      const filteredItems = this.state.items.filter((item) => item.props.name === index);
 
       if (filteredItems.length > 0) {
         index = this.state.items.indexOf(filteredItems[0]);
@@ -149,8 +147,7 @@ export default class Carousel extends Component {
     index = Number(index);
 
     if (isNaN(index) || index !== Math.floor(index)) {
-      process.env.NODE_ENV !== 'production' &&
-        console.warn('[Element Warn][Carousel]index must be an integer.');
+      process.env.NODE_ENV !== "production" && console.warn("[Element Warn][Carousel]index must be an integer.");
       return;
     }
 
@@ -177,14 +174,14 @@ export default class Carousel extends Component {
 
   handleIndicatorClick(index) {
     this.setState({
-      activeIndex: index
+      activeIndex: index,
     });
   }
 
   handleIndicatorHover(index) {
-    if (this.props.trigger === 'hover' && index !== this.state.activeIndex) {
+    if (this.props.trigger === "hover" && index !== this.state.activeIndex) {
       this.setState({
-        activeIndex: index
+        activeIndex: index,
       });
     }
   }
@@ -192,7 +189,7 @@ export default class Carousel extends Component {
   get iscard() {
     const { type } = this.props;
     if (type) {
-      return type === 'card' || type === 'flatcard';
+      return type === "card" || type === "flatcard";
     }
     return false;
   }
@@ -203,72 +200,64 @@ export default class Carousel extends Component {
     return (
       <ComponentContext.Provider value={this}>
         <div
-          ref={(root) => { this.root = root; }}
-          className={classnames('el-carousel', { 'el-carousel--card': this.iscard })}
+          ref={(root) => {
+            this.root = root;
+          }}
+          className={classnames("el-carousel", { "el-carousel--card": this.iscard })}
           onMouseEnter={this.handleMouseEnter.bind(this)}
           onMouseLeave={this.handleMouseLeave.bind(this)}
         >
-          <div
-            className="el-carousel__container"
-            style={{ height: height }}>
-            {
-              arrow !== 'never' && (
-                <View show={arrow === 'always' || hover}>
-                  <button
-                    className="el-carousel__arrow el-carousel__arrow--left"
-                    onMouseEnter={this.handleButtonEnter.bind(this, 'left')}
-                    onMouseLeave={this.handleButtonLeave.bind(this)}
-                    onClick={this.throttledArrowClick.bind(this, activeIndex - 1)}
-                  >
-                    <i className="el-icon-arrow-left"></i>
-                  </button>
-                </View>
-              )
-            }
+          <div className='el-carousel__container' style={{ height: height }}>
+            {arrow !== "never" && (
+              <View show={arrow === "always" || hover}>
+                <button
+                  className='el-carousel__arrow el-carousel__arrow--left'
+                  onMouseEnter={this.handleButtonEnter.bind(this, "left")}
+                  onMouseLeave={this.handleButtonLeave.bind(this)}
+                  onClick={this.throttledArrowClick.bind(this, activeIndex - 1)}
+                >
+                  <i className='icon-arrow-left iconfont'></i>
+                </button>
+              </View>
+            )}
 
-            {
-              arrow !== 'never' && (
-                <View show={arrow === 'always' || hover}>
-                  <button
-                    className="el-carousel__arrow el-carousel__arrow--right"
-                    onMouseEnter={this.handleButtonEnter.bind(this, 'right')}
-                    onMouseLeave={this.handleButtonLeave.bind(this)}
-                    onClick={this.throttledArrowClick.bind(this, activeIndex + 1)}
-                  >
-                    <i className="el-icon-arrow-right"></i>
-                  </button>
-                </View>
-              )
-            }
+            {arrow !== "never" && (
+              <View show={arrow === "always" || hover}>
+                <button
+                  className='el-carousel__arrow el-carousel__arrow--right'
+                  onMouseEnter={this.handleButtonEnter.bind(this, "right")}
+                  onMouseLeave={this.handleButtonLeave.bind(this)}
+                  onClick={this.throttledArrowClick.bind(this, activeIndex + 1)}
+                >
+                  <i className='icon-arrow-right iconfont'></i>
+                </button>
+              </View>
+            )}
             {this.props.children}
           </div>
-          {
-            indicatorPosition !== 'none' && (
-              <ul
-                className={classnames('el-carousel__indicators', {
-                  'el-carousel__indicators--outside': indicatorPosition === 'outside' || this.iscard
-                })}
-              >
-                {
-                  items.map((item, index) => {
-                    return (
-                      <li
-                        key={index}
-                        className={classnames('el-carousel__indicator', { 'is-active': index === activeIndex })}
-                        onMouseEnter={this.throttledIndicatorHover.bind(this, index)}
-                        onClick={this.handleIndicatorClick.bind(this, index)}
-                      >
-                        <button className="el-carousel__button"></button>
-                      </li>
-                    )
-                  })
-                }
-              </ul>
-            )
-          }
+          {indicatorPosition !== "none" && (
+            <ul
+              className={classnames("el-carousel__indicators", {
+                "el-carousel__indicators--outside": indicatorPosition === "outside" || this.iscard,
+              })}
+            >
+              {items.map((item, index) => {
+                return (
+                  <li
+                    key={index}
+                    className={classnames("el-carousel__indicator", { "is-active": index === activeIndex })}
+                    onMouseEnter={this.throttledIndicatorHover.bind(this, index)}
+                    onClick={this.handleIndicatorClick.bind(this, index)}
+                  >
+                    <button className='el-carousel__button'></button>
+                  </li>
+                );
+              })}
+            </ul>
+          )}
         </div>
       </ComponentContext.Provider>
-    )
+    );
   }
 }
 
@@ -281,16 +270,16 @@ Carousel.propTypes = {
   indicatorPosition: PropTypes.string,
   indicator: PropTypes.bool,
   arrow: PropTypes.string,
-  type: PropTypes.oneOf(['card', 'flatcard']),
+  type: PropTypes.oneOf(["card", "flatcard"]),
   onChange: PropTypes.func,
-  children: PropTypes.oneOfType([PropTypes.array, PropTypes.object])
+  children: PropTypes.oneOfType([PropTypes.array, PropTypes.object]),
 };
 
 Carousel.defaultProps = {
   initialIndex: 0,
-  trigger: 'hover',
+  trigger: "hover",
   autoplay: false,
   interval: 3000,
   indicator: true,
-  arrow: 'hover'
+  arrow: "hover",
 };

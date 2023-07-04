@@ -6,10 +6,11 @@
     "@better-scroll/core": "^2.4.2",
     "@better-scroll/mouse-wheel": "^2.4.2",
     "@better-scroll/scroll-bar": "^2.4.2",
-    "antd": "^3.16.6",
+    "antd": "^4.24.2",
     "axios": "^0.18.0",
     "cheerio": "^1.0.0-rc.3",
     "classnames": "^2.3.1",
+    "click-outside": "^2.0.2",
     "immutable": "^4.1.0",
     "normalize.css": "^8.0.1",
     "react": "16.8.6",
@@ -23,6 +24,7 @@
     "redux-immutable": "^4.0.0",
     "redux-saga": "0.16.0",
     "redux-thunk": "^2.3.0",
+    "smooth-scrollbar": "^8.8.1",
     "swiper": "^8.3.2"
   },
   "scripts": {
@@ -49,7 +51,7 @@
     ]
   },
   "devDependencies": {
-    "NeteaseCloudMusicApi": "^4.7.0",
+    "NeteaseCloudMusicApi": "^4.8.2",
     "babel-eslint": "^10.0.1",
     "babel-loader": "^8.0.5",
     "babel-plugin-import": "^1.13.5",

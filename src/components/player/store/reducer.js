@@ -37,15 +37,14 @@ export default (state = defaultState, action) => {
 
         case constants.READY: {
 
-            const currentSong = state.get('song')
+            // const currentSong = state.get('song')
             const ready = action.ready
             const playing = state.get('playing')
             if (!ready) state.set('ready', action.ready)
             const $cover = state.get('refs').$cover
             const $audio = state.get('refs').$audio
-            $cover.setImage(currentSong.image)
             if (playing) {
-                $cover.start()
+                $cover.style.animationPlayState = 'running'
                 $audio.play()
             }
             return state.set('ready', action.ready)
@@ -66,11 +65,13 @@ export default (state = defaultState, action) => {
             if (!ready) {
                 return state.set('playing', playing)
             }
+            console.log($cover )
+
             if (playing) {
-                $cover.start()
+                $cover.style.animationPlayState = 'running'
                 $audio.play()
             } else {
-                $cover.stop()
+                $cover.style.animationPlayState = 'paused'
                 $audio.pause()
             }
             return state.set('playing', playing);

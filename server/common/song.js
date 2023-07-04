@@ -1,63 +1,74 @@
-const { isBuffer } = require('lodash')
-const { getFormattedTime } = require('../common/utils')
-const { song_url, lyric } = require('NeteaseCloudMusicApi')
+const { isBuffer } = require("lodash");
+const { getFormattedTime } = require("../common/utils");
+const { song_url, lyric, song_detail } = require("NeteaseCloudMusicApi");
+
+const getSongDetail = async function (ids) {
+  try {
+    const res = await song_detail({ ids });
+    return res.body;
+  } catch (error) {
+    return error;
+  }
+};
+
 /**
- * 获取歌曲url                                                                                                             
- * @param {Array} id 
- * @returns 
+ * 获取歌曲url
+ * @param {Array} id
+ * @returns
  */
 const getSongUrl = async function (id) {
-    try {
-        const res = await song_url({ id })
-        res.body = isBuffer(res.body) ? res.body.toString() : res.body
-        return res
-    } catch (error) {
-        return error
-    }
-
-}
+  try {
+    const res = await song_url({ id });
+    res.body = isBuffer(res.body) ? res.body.toString() : res.body;
+    return res;
+  } catch (error) {
+    return error;
+  }
+};
 
 /**
  * 获取歌词
- * @param {id} id 
- * @returns 
+ * @param {id} id
+ * @returns
  */
 const getLyric = async function (id) {
-    try {
-        const res = await lyric({ id })
-        return res.body
-    } catch (error) {
-        return error
-    }
-}
+  try {
+    const res = await lyric({ id });
+    return res.body;
+  } catch (error) {
+    return error;
+  }
+};
 
+const createSong = function ({ name, id, artists, album, duration, image, url, metadata, score, alia, publishTime }) {
+  // const isLike = RegExp(/p2.music/).test(image)
+  return {
+    name,
+    id,
+    artists: formatName(artists),
+    album: album.name,
+    duration: getFormattedTime(duration),
+    image,
+    url,
+    isLike: false,
+    metadata,
+    score,
+    alia,
+    publishTime,
+  };
+};
 
-const createSong = function ({ name, id, artists, album, duration, image, url, metadata }) {
-    // const isLike = RegExp(/p2.music/).test(image)
-    return {
-        name,
-        id,
-        artists: formatName(artists),
-        album: album.name,
-        duration: getFormattedTime(duration),
-        image,
-        url,
-        isLike: false,
-        metadata
-    }
-}
-
-function formatName(data, field = 'name') {
-    let ret = []
-    if (!data) return ''
-    data.forEach((s) => {
-        ret.push(s[field])
-    })
-    return ret.join('/')
+function formatName(data, field = "name") {
+  let ret = [];
+  if (!data) return "";
+  data.forEach((s) => {
+    ret.push(s[field]);
+  });
+  return ret.join("/");
 }
 module.exports = {
-    createSong,
-    getSongUrl,
-    getLyric
-}
-
+  createSong,
+  getSongUrl,
+  getLyric,
+  getSongDetail,
+};
