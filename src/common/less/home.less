@@ -96,19 +96,24 @@ body {
   .ant-table {
     background-color: transparent;
   }
-  .ant-table-tbody > tr > td {
+
+  .ant-table-tbody>tr>td {
     border: 0;
   }
-  .ant-table-thead > tr > th {
+
+  .ant-table-thead>tr>th {
     border: 0;
   }
-  .ant-table-thead > tr > th:not(:last-child):not(.ant-table-selection-column):not(.ant-table-row-expand-icon-cell):not([colspan])::before {
+
+  .ant-table-thead>tr>th:not(:last-child):not(.ant-table-selection-column):not(.ant-table-row-expand-icon-cell):not([colspan])::before {
     display: none;
   }
+
   .table-toolbar {
     display: flex;
     align-items: center;
     justify-content: space-between;
+
     .toolbar-item {
       display: inline-block;
       width: 22px;
@@ -116,16 +121,20 @@ body {
       vertical-align: middle;
       line-height: 22px;
       cursor: pointer;
+
       &:first-child {
         margin-right: 12px;
       }
     }
+
     .iconfont {
       font-size: @font-size-lg + 2px;
       transition: all 0.25s cubic-bezier(0.075, 0.82, 0.165, 1);
+
       &:hover {
         color: @white;
       }
+
       &.icon-like {
         &:hover {
           color: @red-5;

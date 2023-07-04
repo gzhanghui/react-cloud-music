@@ -1,9 +1,11 @@
 @import url("./variable.less");
+
 .login-header {
   position: relative;
   box-sizing: border-box;
   height: 62px;
   color: @primary-color;
+
   .title {
     display: inline-block;
     width: 100%;
@@ -22,8 +24,10 @@
   font-size: @font-size-lg + 2px;
   cursor: pointer;
 }
+
 .login-form {
   padding: 0 28px;
+
   input {
     position: relative;
     width: 100%;
@@ -34,6 +38,7 @@
     font-size: 14px;
     line-height: 36px;
   }
+
   input:-webkit-autofill,
   textarea:-webkit-autofill,
   select:-webkit-autofill {
@@ -42,11 +47,14 @@
     -webkit-text-fill-color: #000;
   }
 }
+
 .login-item {
   padding-top: 18px;
 }
+
 .login-btn {
   margin-top: @padding-lg;
+
   .btn-common {
     position: relative;
     overflow: hidden;
@@ -56,6 +64,7 @@
     line-height: 40px;
     cursor: pointer;
   }
+
   .btn-inner {
     display: inline-block;
     width: 100%;
@@ -67,6 +76,7 @@
     transition: all 0.25s @cubic-bezier;
 
     user-select: none;
+
     &:hover,
     &:active {
       opacity: 0.8;
@@ -77,6 +87,7 @@
 .login-tab {
   margin-bottom: 6px;
   text-align: center;
+
   span {
     position: relative;
     display: inline-block;
@@ -86,9 +97,11 @@
     line-height: 24px;
     cursor: pointer;
     transition: all 0.25s @cubic-bezier;
+
     &:hover {
       color: @primary-color;
     }
+
     &.selected {
       color: @primary-color;
 
@@ -114,9 +127,11 @@
   text-align: center;
   font-size: 16px;
   line-height: 22px;
+
   .sns-list {
     margin-top: 15px;
   }
+
   a {
     display: inline-block;
     overflow: hidden;
@@ -125,6 +140,7 @@
     height: 40px;
     color: @text-color;
     line-height: 40px;
+
     &:hover {
       color: @text-color;
 
@@ -133,18 +149,23 @@
       }
     }
   }
+
   i {
     font-size: 34px;
     transition: all 0.25s @cubic-bezier;
+
     &.icon-qq {
       color: #12b7f5;
     }
+
     &.icon-wechat {
       color: #07c160;
     }
+
     &.icon-sina {
       color: #f70b19;
     }
+
     &.icon-netease {
       color: #ff3333;
     }
@@ -173,10 +194,12 @@
     text-align: center;
     font-size: @font-size-lg+2px;
   }
+
   span {
     vertical-align: middle;
     font-size: 14px;
   }
+
   .icon-caret-right {
     margin-left: 4px;
     vertical-align: middle;
@@ -269,6 +292,7 @@
 
   .list-item {
     margin: @margin-md + @margin-xs 0;
+
     a {
       position: relative;
       display: table;
@@ -280,6 +304,7 @@
       line-height: @menu-item-height - 4px;
       cursor: pointer;
       transition: all 0.25s;
+
       &::after {
         position: absolute;
         top: 0;
@@ -291,6 +316,7 @@
         transition: all 0.15s @ease-out;
         transform: scaleY(0.0001);
       }
+
       &.active {
         color: fade(@white, 85%);
 
@@ -300,6 +326,7 @@
           transform: scaleY(1);
         }
       }
+
       &:hover {
         color: fade(@white, 85%);
       }
@@ -332,6 +359,7 @@
 }
 
 body {
+
   .ant-popover-content,
   .ant-popover-inner {
     z-index: 1;
@@ -340,7 +368,7 @@ body {
     box-shadow: 0 2px 6px 0 rgb(0, 0, 0, 0.1);
   }
 
-  .ant-popover-placement-rightTop > .ant-popover-content > .ant-popover-arrow {
+  .ant-popover-placement-rightTop>.ant-popover-content>.ant-popover-arrow {
     border-color: @aside-background;
   }
 
