@@ -1,0 +1,158 @@
+// @prefix-cls: "discover";
+
+// .@{prefix-cls} {
+// }
+
+.carousel {
+  .swiper-pagination {
+    position: absolute;
+    top: 20%;
+    right: 100px;
+  }
+
+  .swiper-pagination-bullet {
+    display: block;
+    margin: 8px 0;
+    width: 6px;
+    height: 6px;
+    border: 1px solid #fff;
+    border-radius: 50%;
+
+    &-active {
+      background-color: #fff;
+    }
+  }
+}
+
+.featured-card {
+  .swiper-slide {
+    width: auto;
+  }
+
+  .featured-item {
+    display: inline-block;
+    width: 124px;
+
+    .image {
+      display: inline-block;
+      border-radius: @border-radius-base+2px;
+
+      user-select: none;
+      .size(100%, 100%);
+    }
+
+    p {
+      overflow: hidden;
+      padding-top: @padding-sm;
+      width: 100%;
+      line-height: 18px;
+
+      .no-wrap();
+    }
+  }
+
+  button {
+    outline: none;
+    border: 0;
+    background-color: transparent;
+    color: @white;
+    vertical-align: middle;
+    font-weight: 600;
+    font-size: @font-size-lg + 1px;
+    cursor: pointer;
+
+    &.swiper-button-disabled {
+      color: rgba(255, 255, 255, 0.65);
+      cursor: not-allowed;
+    }
+  }
+}
+
+.more-btn {
+  display: table-cell;
+  vertical-align: middle;
+  font-size: 0;
+
+  span {
+    vertical-align: middle;
+    font-size: @font-size-base;
+  }
+
+  .iconfont {
+    vertical-align: middle;
+    font-weight: 600;
+    font-size: @font-size-lg;
+  }
+}
+
+.new-album {
+  // display: flex;
+  // flex-wrap: wrap;
+  // justify-content: space-between;
+
+  .swiper {
+    box-sizing: border-box;
+    margin-right: auto;
+    margin-left: auto;
+    width: 100%;
+    height: 450px;
+  }
+
+  .swiper-slide {
+    display: flex;
+    justify-content: center;
+    margin-top: 0 !important;
+    width: 186px;
+    height: 186px;
+    text-align: center;
+  }
+  .album-item {
+    display: inline-block;
+    overflow: hidden;
+    // width: 242px;
+    // height: 242px;
+    border-radius: 4px;
+    .album-pic {
+      margin-bottom: @padding-xs;
+      width: 100%;
+
+      object-fit: cover;
+    }
+  }
+
+  // .album-item {
+  //   display: inline-block;
+  //   width: 242px;
+  //   cursor: pointer;
+  //   .album-pic {
+  //     margin-bottom: @padding-xs;
+  //     width: 100%;
+  //     border-radius: 4px;
+  //     transition: color 0.1s ease-in-out;
+
+  //     &:hover {
+  //       filter: contrast(1.3) saturate(1.2);
+  //     }
+  //   }
+  //   p {
+  //     margin: 0;
+  //   }
+  //   .album-name {
+  //     display: block;
+  //     overflow: hidden;
+  //     height: 24px;
+  //     color: @header-color;
+  //     line-height: 24px;
+
+  //     .no-wrap();
+  //   }
+  //   .album-artist {
+  //     overflow: hidden;
+  //     margin-bottom: @padding-md;
+  //     height: 22px;
+  //     line-height: 22px;
+
+  //     .no-wrap();
+  //   }
+  // }
+}

@@ -1,0 +1,48 @@
+.clearfix() {
+  zoom: 1;
+
+  &::before,
+  &::after {
+    display: table;
+    content: "";
+  }
+
+  &::after {
+    clear: both;
+  }
+}
+
+.size(@width; @height) {
+  width: @width;
+  height: @height;
+}
+
+.ellipsis(@value: 1) {
+  display: -webkit-box;
+  overflow: hidden;
+  /* autoprefixer: ignore next */
+  -webkit-box-orient: vertical;
+
+  line-clamp: @value;
+  -webkit-line-clamp: @value;
+}
+
+.no-wrap() {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.hidden {
+  display: none !important;
+}
+
+body {
+  a {
+    color: hsla(0, 0%, 100%, 0.5);
+  }
+}
+
+@border-color: hsla(0, 0%, 100%, 0.04);
+@aside-background: @component-background;
+@cubic-bezier: cubic-bezier(0.72, 0.23, 0.67, 1.4);

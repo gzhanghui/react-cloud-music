@@ -7,7 +7,7 @@
         {
             "console": "integratedTerminal",
             "internalConsoleOptions": "neverOpen",
-            "name": "nodemon music",
+            "name": "nodemon",
             "program": "${workspaceFolder}/server/app.js",
             "request": "launch",
             "restart": true,
@@ -15,12 +15,21 @@
             "skipFiles": [
                 "<node_internals>/**"
             ],
-            "type": "pwa-node"
+            "type": "node"
         },
         {
             "type": "pwa-node",
             "request": "launch",
-            "name": "current file",
+            "name": "node",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "program": "${workspaceFolder}/server/app.js"
+        },
+        {
+            "type": "pwa-node",
+            "request": "launch",
+            "name": "当前文件",
             "skipFiles": [
                 "<node_internals>/**"
             ],

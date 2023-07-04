@@ -1,0 +1,108 @@
+.playlist {
+  overflow-x: hidden;
+  box-sizing: border-box;
+  padding: 0;
+  width: 100%;
+  &-item {
+    display: inline-block;
+    overflow: hidden;
+    padding-bottom: 44px;
+    width: 100%;
+    vertical-align: top;
+  }
+  &-cover {
+    position: relative;
+    display: block;
+    overflow: hidden;
+    margin-bottom: 15px;
+    padding-top: 100%;
+    text-align: center;
+    cursor: pointer;
+    zoom: 1;
+    &::after {
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: 2;
+      display: inline-block;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.125);
+      content: " ";
+      transition: all 0.25s @ease-in-out;
+    }
+    &:hover {
+      &::after {
+        background-color: rgba(0, 0, 0, 0);
+      }
+    }
+  }
+  .name {
+    display: -webkit-box;
+    overflow: hidden;
+    width: 100%;
+
+    .ellipsis(2);
+  }
+  &-image {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 1;
+  }
+  .cover-tag {
+    position: absolute;
+    top: 0;
+    right: 0;
+    z-index: 99;
+    padding: 0;
+    width: 36px;
+    height: 19px;
+    background-color: #01d662;
+    background-image: linear-gradient(90deg, #01d662, #01d662);
+    color: @white;
+    font-size: 13px;
+    line-height: 19px;
+  }
+  .tag-wrap {
+    .tag-title {
+      margin-bottom: @margin-md + @margin-xs;
+      color: @heading-color;
+      font-weight: 500;
+      font-size: @font-size-lg - 1px;
+    }
+  }
+  .categories {
+    position: relative;
+    display: block;
+    overflow: hidden;
+    margin-bottom: 15px;
+    padding-top: 100%;
+    text-align: center;
+    cursor: pointer;
+    zoom: 1;
+    .categories-item {
+      position: absolute;
+      top: 0;
+      left: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      height: 100%;
+      border-radius: 8px;
+      background: url(https://mrmockup.com/wp-content/uploads/2022/01/09-Stationery-Mockups-B.jpeg) no-repeat;
+      background-color: #e6fffb;
+      background-size: cover;
+      .iconfont {
+        font-size: 28px;
+      }
+    }
+    &-1 {
+      .categories-item {
+        background: url(https://mrmockup.com/wp-content/uploads/2022/01/10-Stationery-Mockups-B.jpeg?x18252) no-repeat;
+        background-size: cover;
+      }
+    }
+  }
+}

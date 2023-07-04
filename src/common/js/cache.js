@@ -1,5 +1,5 @@
 
-import utils from "./util"
+import { storage } from "./util"
 // const prefix = '__react__music__'
 const USER_INFO = '__music_user_info__'
 const ACCESS_TOKEN = '__music_assess_token__'
@@ -7,7 +7,6 @@ const HISTORY_SEARCH = 'history-search'
 const HISTORY_PLAYLIST = 'history_playlist'
 const PLAY_MODE = 'play-mode'
 
-const { storage } = utils
 export const cacheUser = {
     set: function (data) {
         storage.set(USER_INFO, data)
@@ -42,7 +41,7 @@ export const cachePlaylist = {
         storage.set(HISTORY_PLAYLIST, data)
     },
     get: function () {
-        return storage.get(HISTORY_PLAYLIST)
+        return storage.get(HISTORY_PLAYLIST) || []
     }
 }
 
